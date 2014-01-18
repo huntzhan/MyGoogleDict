@@ -4,7 +4,8 @@ MyGoogleDict is a command line tool which communicates with google translation s
 
 1. Communicate with [translate.google.com](translate.google.com) for translation bussiness.
 1. Support various languages.
-1. Record and manage the searching history of user.
+1. Support translation of a single word and multi-words sentences.
+1. Record and display the searching history of user.
 1. Human readable manual in command line interface.
 
 #Design
@@ -57,16 +58,18 @@ where mgd is the abbreviation of MyGoogleDict.
 ##Usage
 Example of usage:
 
-	$ mgd test
-	测试
-	$ mgd -t ja test
-	テスト
-	$ mgd -v 测试
-	Test
-	$ mgd -f zh-CN -t en 测试
-	Test
 	$ mgd -r
-	test	测试
-	test	テスト
-	测试	   Test
-	测试	   Test
+	No Record.
+	$ mgd test
+	[verb] 检验, 试, 考, 测验, 验, 考查, 尝
+	[noun] 测试, 试验, 试, 实验, 考试, 考验, 测验
+	$ mgd -t ja test
+	[verb] 試す, 試みる
+	[noun] テスト, 試験, 試し, 試練, 考査
+	$ mgd -f zh-CN -t en 测试
+	[noun] test, examination
+	$ mgd -r
+	[test][测试]
+	[test][テスト]
+	[测试][Test]
+
