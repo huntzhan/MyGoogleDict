@@ -3,7 +3,6 @@ import os
 import gzip
 import inspect
 from datetime import datetime
-import pickle
 import xml.etree.ElementTree as ET
 from functools import wraps
 from goslate import AdjustedGoslate
@@ -33,8 +32,7 @@ def _ensure_decode(func):
 
 
 class Record:
-    # FILE_NAME = 'search_record.xml.gz'
-    FILE_NAME = 'search_record.pickle.gz'
+    FILE_NAME = 'search_record.xml.gz'
     ROOT = 'root'
     RECORD = 'record'
     FROM_LANG = 'from_lang'
@@ -76,19 +74,6 @@ class Record:
         with gzip.open(self._file_path, 'wb') as f:
             f.write(raw_xml)
 
-    def _pickle_load_xml(self, xml_path):
-        try:
-            with gzip.open(xml_path) as f:
-                xml = pickle.load(f)
-        except:
-            # new one
-            xml = ET.Element(Record.ROOT)
-        return xml
-
-    def _pickle_write_xml(self, xml):
-        with gzip.open(self._file_path, 'wb') as f:
-            pickle.dump(xml, f)
-
     @_ensure_decode
     def add(self,
             from_lang,
@@ -97,7 +82,7 @@ class Record:
             result):
 
         # read xml record file
-        record_xml = self._pickle_load_xml(self._file_path)
+        record_xml = self._load_xml(self._file_path)
 
         new_record = ET.SubElement(record_xml, Record.RECORD)
 
@@ -133,10 +118,10 @@ class Record:
                     meaning_node.text = val
 
         # save content
-        self._pickle_write_xml(record_xml)
+        self._write_xml(record_xml)
 
     def display(self):
-        record_xml = self._pickle_load_xml(self._file_path)
+        record_xml = self._load_xml(self._file_path)
         records = []
         for record in record_xml:
             extract_data = (
