@@ -447,3 +447,48 @@ if __name__ == '__main__':
         error = sys.exc_info()[1]
         if len(str(error)) > 2:
             print(error)
+
+
+class AdjustedGoslate(Goslate):
+
+    def translate(self, text, target_language, source_language=''):
+        # assert _is_bytes(text)
+
+        if not target_language:
+            raise Error('invalid target language')
+
+        if not text.strip():
+            return u'', unicode(target_language)
+
+        GOOGLE_TRASLATE_URL = 'http://translate.google.com/translate_a/t'
+        GOOGLE_TRASLATE_PARAMETERS = {
+            'client': 'z',
+            'sl': source_language,
+            'tl': target_language,
+            'ie': 'UTF-8',
+            'oe': 'UTF-8',
+            'text': text
+        }
+
+        url = '?'.join(
+            (GOOGLE_TRASLATE_URL, urlencode(GOOGLE_TRASLATE_PARAMETERS))
+        )
+        response_content = self._open_url(url)
+        # That's what I want.
+        data = json.loads(response_content)
+
+        # extract sentence for multiple words translation
+        sentence = u''.join(i['trans'] for i in data['sentences'])
+        # extract the result of single word translation
+        dictionary = data.get(u'dict', None)
+        if dictionary is None:
+            return u'[sentence] ' + sentence
+        else:
+            meanings = []
+            for item in dictionary:
+                explanation = "[{}] {}".format(
+                    item[u'pos'],
+                    ', '.join(item[u'terms']),
+                )
+                meanings.append(explanation)
+            return os.linesep.join(meanings)

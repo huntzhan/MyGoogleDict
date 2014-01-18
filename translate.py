@@ -9,7 +9,7 @@ class Translator:
         self._data = data
 
     def translate(self):
-        gs = goslate.Goslate()
+        gs = goslate.AdjustedGoslate()
         result = gs.translate(
             self._data,
             self._to_lang,
