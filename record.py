@@ -4,7 +4,8 @@ import os
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
-UTF8 = 'UTF-8'
+
+_UTF8 = 'UTF-8'
 
 
 class Record:
@@ -42,7 +43,7 @@ class Record:
         return xml
 
     def _write_xml(self, xml):
-        raw_xml = ET.tostring(xml, encoding=UTF8)
+        raw_xml = ET.tostring(xml, encoding=_UTF8)
         with open(self._file_path, 'wb') as f:
             f.write(raw_xml)
 
@@ -52,6 +53,9 @@ class Record:
             data,
             result):
 
+        # decodeing input source
+        data = data.decode(_UTF8)
+        # read xml record file
         record_xml = self._load_xml(self._file_path)
 
         new_record = ET.SubElement(record_xml, Record.RECORD)
@@ -65,7 +69,7 @@ class Record:
         from_lang_node.text = from_lang
         to_lang_node.text = to_lang
         # make sure input source is decoded
-        data_node.text = data.decode(UTF8)
+        data_node.text = data
         result_node.text = result
         time_node.text = datetime.now().isoformat()
 
@@ -82,7 +86,7 @@ class Record:
                 record.find(Record.TIME).text,
             )
             records.append(
-                map(lambda x: x.encode(UTF8), extract_data),
+                map(lambda x: x.encode(_UTF8), extract_data),
             )
         sorted_records = sorted(
             records,

@@ -33,6 +33,6 @@ if __name__ == '__main__':
         # add record
         record.add(from_lang, to_lang, data, result)
 
-    else:
+    elif arguements['--record']:
         # display
         record.display()

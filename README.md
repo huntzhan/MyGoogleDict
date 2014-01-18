@@ -66,7 +66,7 @@ Example of usage:
 	$ mgd -f zh-CN -t en 测试
 	Test
 	$ mgd -r
-	test 	 测试
-	test 	 テスト
-	测试 	 Test
-	测试 	 Test
+	test	测试
+	test	テスト
+	测试	   Test
+	测试	   Test
