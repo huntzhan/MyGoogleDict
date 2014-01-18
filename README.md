@@ -68,8 +68,11 @@ Example of usage:
 	[noun] テスト, 試験, 試し, 試練, 考査
 	$ mgd -f zh-CN -t en 测试
 	[noun] test, examination
+	$ mgd -v 测试
+	[noun] test, examination
 	$ mgd -r
 	[test][测试]
 	[test][テスト]
+	[测试][Test]
 	[测试][Test]
 
