@@ -4,8 +4,8 @@ MyGoogleDict is a command line tool which communicates with google translation s
 
 1. Communicate with [translate.google.com](translate.google.com) for translation bussiness.
 1. Support various languages.
-1. Support translation of a single word and multi-words sentences.
-1. Record and display the searching history of user.
+1. Support translation of both a single word and multi-words sentences.
+1. Record and display the search history of user.
 1. Human readable manual in command line interface.
 
 #Design
@@ -13,14 +13,14 @@ MyGoogleDict is a command line tool which communicates with google translation s
 ##Depandancy and Resoureces
 
 ###docopt
-[docopt](https://github.com/docopt/docopt) is adopt for parsing the command arguments and showing the command line interface.
+[docopt](https://github.com/docopt/docopt) is adopt for parsing the command arguments.
 
 ###goslate
 [goslate](http://pythonhosted.org/goslate/) handles the communication with google translation server.
 
 
 ##Bussiness
-The bussiness logic is quite simple. As MyGoogleDict is a command line program, the bussiness logic is determined by the arguments and options entered by user.
+The bussiness logic is quite simple. As MyGoogleDict is a command line program, the bussiness logic is roughly determined by the arguments and options entered by user.
 
 Here is the avaliable inputs:
 
@@ -34,7 +34,7 @@ Here is the avaliable inputs:
     	-v --reverse    reverse -f and -t
     	-r --record     display search record
     	
-where <from_lang> and <to_lang> should be the language arguments, could be found in a list of [avaliable languages](https://developers.google.com/translate/v2/using_rest#language-params) of google translation serve.
+where <from_lang> and <to_lang> should be the language arguments, should be found in a list of [avaliable languages](https://developers.google.com/translate/v2/using_rest#language-params) of google translation serve.
 
 ##Implementation
 Directory MyGoogleDict contains following files:
