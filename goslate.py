@@ -45,22 +45,26 @@ try:
 except NameError:
     unicode = str
 
+
 def _is_sequence(arg):
     return (not isinstance(arg, unicode)) and (
         not isinstance(arg, bytes)) and (
         hasattr(arg, "__getitem__") or hasattr(arg, "__iter__"))
+
 
 def _is_bytes(arg):
     return isinstance(arg, bytes)
 
 
 class Error(Exception):
+
     '''Error type
     '''
     pass
 
 
 class Goslate(object):
+
     '''All goslate API lives in this class
 
     You have to first create an instance of Goslate to use this API
@@ -112,7 +116,6 @@ class Goslate(object):
         >>>
     '''
 
-
     _MAX_LENGTH_PER_QUERY = 1800
 
     def __init__(self, opener=None, retry_times=4, executor=_g_executor, timeout=4, debug=False):
@@ -135,10 +138,11 @@ class Goslate(object):
             raise Error('input too large')
 
         # Google forbits urllib2 User-Agent: Python-urllib/2.7
-        request = Request(url, headers={'User-Agent':'Mozilla/4.0'})
+        request = Request(url, headers={'User-Agent': 'Mozilla/4.0'})
 
         exception = None
-        # retry when get (<class 'socket.error'>, error(54, 'Connection reset by peer')
+        # retry when get (<class 'socket.error'>, error(54, 'Connection reset
+        # by peer')
         for i in range(self._RETRY_TIMES):
             try:
                 response = self._opener.open(request, timeout=self._TIMEOUT)
@@ -156,9 +160,9 @@ class Goslate(object):
                 time.sleep(0.0001)
         raise exception
 
-
     def _execute(self, tasks):
-        first_tasks = [next(tasks, None) for i in range(self._MIN_TASKS_FOR_CONCURRENT)]
+        first_tasks = [next(tasks, None)
+                       for i in range(self._MIN_TASKS_FOR_CONCURRENT)]
         tasks = (task for task in itertools.chain(first_tasks, tasks) if task)
 
         if not first_tasks[-1] or not self._executor:
@@ -177,7 +181,6 @@ class Goslate(object):
             if exception:
                 raise exception
 
-
     def _basic_translate(self, text, target_language, source_language=''):
         # assert _is_bytes(text)
 
@@ -193,7 +196,8 @@ class Goslate(object):
         GOOGLE_TRASLATE_URL = 'http://translate.google.com/translate_a/t'
         GOOGLE_TRASLATE_PARAMETERS = {
             # 't' client will receiver non-standard json format
-            # change client to something other than 't' to get standard json response
+            # change client to something other than 't' to get standard json
+            # response
             'client': 'z',
             'sl': source_language,
             'tl': target_language,
@@ -202,13 +206,13 @@ class Goslate(object):
             'text': text
             }
 
-        url = '?'.join((GOOGLE_TRASLATE_URL, urlencode(GOOGLE_TRASLATE_PARAMETERS)))
+        url = '?'.join(
+            (GOOGLE_TRASLATE_URL, urlencode(GOOGLE_TRASLATE_PARAMETERS)))
         response_content = self._open_url(url)
         data = json.loads(response_content)
         translation = u''.join(i['trans'] for i in data['sentences'])
         detected_source_language = data['src']
         return translation, detected_source_language
-
 
     def get_languages(self):
         '''Discover supported languages
@@ -237,7 +241,8 @@ class Goslate(object):
             'client': 't',
             }
 
-        url = '?'.join((GOOGLE_TRASLATOR_URL, urlencode(GOOGLE_TRASLATOR_PARAMETERS)))
+        url = '?'.join(
+            (GOOGLE_TRASLATOR_URL, urlencode(GOOGLE_TRASLATOR_PARAMETERS)))
         response_content = self._open_url(url)
         root = xml.etree.ElementTree.fromstring(response_content)
 
@@ -254,19 +259,20 @@ class Goslate(object):
         self._languages = languages
         return self._languages
 
-
     _SEPERATORS = [quote_plus(i.encode('utf-8')) for i in
                    u'.!?,;。，？！:："\'“”’‘#$%&()（）*×+/<=>@＃￥[\]…［］^`{|}｛｝～~\n\r\t ']
 
     def _translate_single_text(self, text, target_language='zh-CN', source_lauguage=''):
         assert _is_bytes(text)
+
         def split_text(text):
             start = 0
             text = quote_plus(text)
             length = len(text)
             while (length - start) > self._MAX_LENGTH_PER_QUERY:
                 for seperator in self._SEPERATORS:
-                    index = text.rfind(seperator, start, start+self._MAX_LENGTH_PER_QUERY)
+                    index = text.rfind(
+                        seperator, start, start+self._MAX_LENGTH_PER_QUERY)
                     if index != -1:
                         break
                 else:
@@ -281,7 +287,6 @@ class Goslate(object):
             return lambda: self._basic_translate(text, target_language, source_lauguage)[0]
 
         return ''.join(self._execute(make_task(i) for i in split_text(text)))
-
 
     def translate(self, text, target_language, source_language=''):
         '''Translate text from source language to target language
@@ -358,18 +363,15 @@ class Goslate(object):
                     text = i
             yield text
 
-
         def make_task(text):
             return lambda: (i.strip('\n') for i in self._translate_single_text(text, target_language, source_language).split(JOINT))
 
         return itertools.chain.from_iterable(self._execute(make_task(i) for i in join_texts(text)))
 
-
     def _detect_language(self, text):
         if _is_bytes(text):
             text = text.decode('utf-8')
         return self._basic_translate(text[:50].encode('utf-8'), 'en')[1]
-
 
     def detect(self, text):
         '''Detect language of the input text
@@ -412,15 +414,18 @@ def _main(argv):
 
     usage = "usage: %prog [options] <file1 file2 ...>\n<stdin> will be used as input source if no file specified."
 
-    parser = optparse.OptionParser(usage=usage, version="%%prog %s @ Copyright %s" % (__version__, __copyright__))
+    parser = optparse.OptionParser(
+        usage=usage, version="%%prog %s @ Copyright %s" % (__version__, __copyright__))
     parser.add_option('-t', '--target-language', metavar='zh-CN',
                       help='specify target language to translate the source text into')
     parser.add_option('-s', '--source-language', default='', metavar='en',
                       help='specify source language, if not provide it will identify the source language automatically')
-    parser.add_option('-i', '--input-encoding', default=sys.getfilesystemencoding(), metavar='utf-8',
-                      help='specify input encoding, default to current console system encoding')
-    parser.add_option('-o', '--output-encoding', default=sys.getfilesystemencoding(), metavar='utf-8',
-                      help='specify output encoding, default to current console system encoding')
+    parser.add_option(
+        '-i', '--input-encoding', default=sys.getfilesystemencoding(), metavar='utf-8',
+        help='specify input encoding, default to current console system encoding')
+    parser.add_option(
+        '-o', '--output-encoding', default=sys.getfilesystemencoding(), metavar='utf-8',
+        help='specify output encoding, default to current console system encoding')
 
     options, args = parser.parse_args(argv[1:])
 
@@ -434,7 +439,8 @@ def _main(argv):
     # inputs = fileinput.input(args, mode='rU', openhook=fileinput.hook_encoded(options.input_encoding))
     inputs = fileinput.input(args, mode='rb')
     inputs = (i.decode(options.input_encoding) for i in inputs)
-    outputs = gs.translate(inputs, options.target_language, options.source_language)
+    outputs = gs.translate(
+        inputs, options.target_language, options.source_language)
     for i in outputs:
         sys.stdout.write((i+u'\n').encode(options.output_encoding))
         sys.stdout.flush()
@@ -450,6 +456,8 @@ if __name__ == '__main__':
 
 
 class AdjustedGoslate(Goslate):
+    DICT = u'dict'
+    SENTENCE = u'sentence'
 
     def translate(self, text, target_language, source_language=''):
         # assert _is_bytes(text)
@@ -481,14 +489,11 @@ class AdjustedGoslate(Goslate):
         sentence = u''.join(i['trans'] for i in data['sentences'])
         # extract the result of single word translation
         dictionary = data.get(u'dict', None)
-        if dictionary is None:
-            return u'[sentence] ' + sentence
-        else:
-            meanings = []
+
+        meanings = {}
+        meanings[self.SENTENCE] = sentence
+        if dictionary:
+            meanings[self.DICT] = {}
             for item in dictionary:
-                explanation = "[{}] {}".format(
-                    item[u'pos'],
-                    ', '.join(item[u'terms']),
-                )
-                meanings.append(explanation)
-            return os.linesep.join(meanings)
+                meanings[self.DICT][item[u'pos']] = item[u'terms']
+        return meanings

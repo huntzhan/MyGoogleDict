@@ -29,9 +29,9 @@ if __name__ == '__main__':
         # do translation
         translator = Translator(from_lang, to_lang, data)
         result = translator.translate()
-        print(result)
+        translator.display_result(result)
         # add record
-        record.add(from_lang, to_lang, data, result)
+        #record.add(from_lang, to_lang, data, result)
 
     elif arguements['--record']:
         # display
