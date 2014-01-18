@@ -5,6 +5,7 @@ import inspect
 from datetime import datetime
 import xml.etree.ElementTree as ET
 from functools import wraps
+from goslate import AdjustedGoslate
 
 
 _UTF8 = 'UTF-8'
@@ -16,6 +17,9 @@ def _ensure_decode(func):
         try:
             decoded = text.decode(_UTF8)
         except:
+            # both decoded text and result(a dictionary variable contains
+            # decoded information) would trigger exception. In this case, just
+            # return the argument.
             decoded = text
         return decoded
 
@@ -35,6 +39,10 @@ class Record:
     TO_LANG = 'to_lang'
     DATA = 'data'
     RESULT = 'result'
+    SENTENCE = 'sentence'
+    DICT = 'dict'
+    POS = 'pos'
+    MEANING = 'meaning'
     TIME = 'time'
 
     def __init__(self):
@@ -77,19 +85,36 @@ class Record:
         record_xml = self._load_xml(self._file_path)
 
         new_record = ET.SubElement(record_xml, Record.RECORD)
+
         # sub nodes
         from_lang_node = ET.SubElement(new_record, Record.FROM_LANG)
         to_lang_node = ET.SubElement(new_record, Record.TO_LANG)
         data_node = ET.SubElement(new_record, Record.DATA)
         result_node = ET.SubElement(new_record, Record.RESULT)
         time_node = ET.SubElement(new_record, Record.TIME)
+
         # assign values
         from_lang_node.text = from_lang
         to_lang_node.text = to_lang
+
         # make sure input source is decoded
         data_node.text = data
-        result_node.text = result
         time_node.text = datetime.now().isoformat()
+
+        # construct result node
+        sentence_node = ET.SubElement(result_node, Record.SENTENCE)
+        sentence_node.text = result[AdjustedGoslate.SENTENCE]
+
+        # multiple explanations
+        if AdjustedGoslate.DICT in result:
+            dict_node = ET.SubElement(result_node, Record.DICT)
+            for pos, vals in result.get(AdjustedGoslate.DICT).items():
+                pos_node = ET.SubElement(dict_node, Record.POS)
+                pos_node.text = pos
+
+                for val in vals:
+                    meaning_node = ET.SubElement(pos_node, Record.MEANING)
+                    meaning_node.text = val
 
         # save content
         self._write_xml(record_xml)
@@ -100,7 +125,7 @@ class Record:
         for record in record_xml:
             extract_data = (
                 record.find(Record.DATA).text,
-                record.find(Record.RESULT).text,
+                record.find(Record.RESULT).find(Record.SENTENCE).text,
                 record.find(Record.TIME).text,
             )
             records.append(

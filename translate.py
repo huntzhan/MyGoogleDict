@@ -35,5 +35,4 @@ class Translator:
             print(os.linesep.join(lines))
         else:
             val = result[AdjustedGoslate.SENTENCE]
-            print(OUTPUT_FORMAT.format(
-                AdjustedGoslate.SENTENCE, val))
+            print(OUTPUT_FORMAT.format(AdjustedGoslate.SENTENCE, val))

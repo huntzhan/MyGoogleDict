@@ -28,10 +28,14 @@ if __name__ == '__main__':
             if reverse else (from_lang, to_lang)
         # do translation
         translator = Translator(from_lang, to_lang, data)
+
+        # result is a dictionary contains decoded infomation of the
+        # trnaslation.
         result = translator.translate()
+
         translator.display_result(result)
         # add record
-        #record.add(from_lang, to_lang, data, result)
+        record.add(from_lang, to_lang, data, result)
 
     elif arguements['--record']:
         # display
