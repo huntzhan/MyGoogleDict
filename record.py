@@ -1,15 +1,34 @@
 from __future__ import print_function
-import inspect
 import os
+import gzip
+import inspect
 from datetime import datetime
 import xml.etree.ElementTree as ET
+from functools import wraps
 
 
 _UTF8 = 'UTF-8'
+_ISO_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
+
+
+def _ensure_decode(func):
+    def utf8_decoder(text):
+        try:
+            decoded = text.decode(_UTF8)
+        except:
+            decoded = text
+        return decoded
+
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        decoded_args = map(utf8_decoder, args)
+        decoded_kwargs = {k: utf8_decoder(v) for k, v in kwargs.items()}
+        return func(self, *decoded_args, **decoded_kwargs)
+    return wrapper
 
 
 class Record:
-    FILE_NAME = 'search_record'
+    FILE_NAME = 'search_record.xml.gz'
     ROOT = 'root'
     RECORD = 'record'
     FROM_LANG = 'from_lang'
@@ -34,7 +53,7 @@ class Record:
 
     def _load_xml(self, xml_path):
         try:
-            with open(xml_path) as f:
+            with gzip.open(xml_path) as f:
                 xml_content = f.read()
             xml = ET.fromstring(xml_content)
         except:
@@ -44,17 +63,16 @@ class Record:
 
     def _write_xml(self, xml):
         raw_xml = ET.tostring(xml, encoding=_UTF8)
-        with open(self._file_path, 'wb') as f:
+        with gzip.open(self._file_path, 'wb') as f:
             f.write(raw_xml)
 
+    @_ensure_decode
     def add(self,
             from_lang,
             to_lang,
             data,
             result):
 
-        # decodeing input source
-        data = data.decode(_UTF8)
         # read xml record file
         record_xml = self._load_xml(self._file_path)
 
@@ -90,8 +108,12 @@ class Record:
             )
         sorted_records = sorted(
             records,
-            key=lambda x: datetime.strptime(x[-1], "%Y-%m-%dT%H:%M:%S.%f"),
+            key=lambda x: datetime.strptime(x[-1], _ISO_FORMAT),
         )
 
-        for data, result, _ in sorted_records:
-            print(data, '\t', result)
+        if not sorted_records:
+            print("No Record.")
+        else:
+            for data, result, _ in sorted_records:
+                line = "[{}][{}]".format(data, result)
+                print(line)
