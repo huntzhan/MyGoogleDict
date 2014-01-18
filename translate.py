@@ -13,11 +13,21 @@ class Translator:
 
     def translate(self):
         gs = AdjustedGoslate()
-        result = gs.translate(
-            self._data,
-            self._to_lang,
-            self._from_lang,
-        )
+
+        reconnect_times = 5
+        result = None
+        while reconnect_times > 0:
+            try:
+                result = gs.translate(
+                    self._data,
+                    self._to_lang,
+                    self._from_lang,
+                )
+                # quit
+                reconnect_times = 0
+            except:
+                reconnect_times -= 1
+
         return result
 
     @staticmethod

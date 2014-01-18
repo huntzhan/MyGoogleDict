@@ -110,7 +110,8 @@ class Record:
             dict_node = ET.SubElement(result_node, Record.DICT)
             for pos, vals in result.get(AdjustedGoslate.DICT).items():
                 pos_node = ET.SubElement(dict_node, Record.POS)
-                pos_node.text = pos
+                # pos could be empty, I don't know why.
+                pos_node.text = pos or 'error_pos'
 
                 for val in vals:
                     meaning_node = ET.SubElement(pos_node, Record.MEANING)
