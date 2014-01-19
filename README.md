@@ -24,17 +24,20 @@ The bussiness logic is quite simple. As MyGoogleDict is a command line program, 
 
 Here is the avaliable inputs:
 
-	Usage: mgd [-f <from_lang>] [-t <to_lang>] [-v|--reverse] <data>
-       	   mgd -r|--record
-       	   mgd -h|--help
-
+	Usage: mgd [--debug] [-f <from_lang>] [-t <to_lang>] [-v|--reverse] <data>...
+	       mgd [--debug] -r|--record
+	
 	Options:
-    	-f <from_lang>  input language [default: en]
-    	-t <to_lang>    ouput language [default: zh-CN]
-    	-v --reverse    reverse -f and -t
-    	-r --record     display search record
+	    -f <from_lang>  input language [default: en]
+	    -t <to_lang>    ouput language [default: zh-CN]
+	    -v --reverse    reverse -f and -t
+	    -r --record     display search record
+	    --debug         display runtime information
+
     	
 where <from_lang> and <to_lang> should be the language arguments, should be found in a list of [avaliable languages](https://developers.google.com/translate/v2/using_rest#language-params) of google translation serve.
+
+Records of translation are stored in **cache.xml** and **record.xml.gz**. 
 
 ##Implementation
 Directory MyGoogleDict contains following files:
@@ -42,6 +45,8 @@ Directory MyGoogleDict contains following files:
 * **interface.py** for the job of argument parsing.
 * **translate.py** for the translation logic.
 * **record.py** for reading and writing search records.
+* **share.py** for shared code.
+* **config.py** currently for default languages configuration.
 
 
 ##Deployment
@@ -70,9 +75,14 @@ Example of usage:
 	[noun] test, examination
 	$ mgd -v 测试
 	[noun] test, examination
+	$ mgd this is a sentence.
+	[sentence] 这是一个句子。
 	$ mgd -r
 	[test][测试]
 	[test][テスト]
 	[测试][Test]
 	[测试][Test]
+	[this is a sentence.][这是一个句子。]
+
+If you want to change the default languages, just modify **config.py**.
 
