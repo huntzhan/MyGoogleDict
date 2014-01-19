@@ -24,6 +24,7 @@ _POS = 'pos'
 _MEANING = 'meaning'
 _TIME = 'time'
 
+
 def _ensure_decode(func):
     def utf8_decoder(text):
         try:
@@ -41,6 +42,7 @@ def _ensure_decode(func):
         decoded_kwargs = {k: utf8_decoder(v) for k, v in kwargs.items()}
         return func(self, *decoded_args, **decoded_kwargs)
     return wrapper
+
 
 def _debug_return_val(func):
     def _print_func(prefix, name):
@@ -63,6 +65,17 @@ def _debug_return_val(func):
     return wrapper
 
 
+def _decorate_all_methods(decorator):
+    def decorate(cls):
+        for attr, method in inspect.getmembers(cls, inspect.ismethod):
+            if attr == '__init__':
+                continue
+            setattr(cls, attr, decorator(method))
+        return cls
+    return decorate
+
+
+@_decorate_all_methods(_debug_return_val)
 class Record:
 
     def __init__(self, debug=False):
@@ -79,14 +92,12 @@ class Record:
             _RECORD_FILE_NAME,
         )
 
-    @_debug_return_val
     def _get_dir_path(self):
         dir = inspect.getmodule(self)
         path = dir.__file__
         dir_path, _ = os.path.split(path)
         return dir_path
 
-    @_debug_return_val
     def _load_xml(self, file_path, gzip_enable=False):
         openfile = gzip.open if gzip_enable else open
         try:
@@ -98,7 +109,6 @@ class Record:
             xml = ET.Element(_ROOT)
         return xml
 
-    @_debug_return_val
     def _write_xml(self, xml, file_path,  gzip_enable=False):
         raw_xml = ET.tostring(xml, encoding=_UTF8)
 
@@ -106,7 +116,6 @@ class Record:
         with openfile(file_path, 'wb') as f:
             f.write(raw_xml)
 
-    @_debug_return_val
     def _judge_merge(self, file_path):
         # judge merge based on the file size(in bytes) pointed by file_path
         MAX_SIZE = 65535
@@ -121,7 +130,6 @@ class Record:
         else:
             return False
 
-    @_debug_return_val
     def _merge_records_from_cache(self, record_path, cache_path,
                                   force_merge=False):
         if not self._judge_merge(cache_path)\
@@ -138,7 +146,6 @@ class Record:
         self._write_xml(record_xml, self._record_path, gzip_enable=True)
         self._write_xml(cache_xml, self._cache_path)
 
-    @_debug_return_val
     @_ensure_decode
     def add(self,
             from_lang,
@@ -187,7 +194,6 @@ class Record:
         # judge merge
         self._merge_records_from_cache(self._record_path, self._cache_path)
 
-    @_debug_return_val
     def display(self):
         # merge first
         self._merge_records_from_cache(
