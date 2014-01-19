@@ -119,7 +119,7 @@ class Goslate(object):
     _MAX_LENGTH_PER_QUERY = 1800
 
     def __init__(self, opener=None, retry_times=4, executor=_g_executor, timeout=4, debug=False):
-        self._DEBUG = False
+        self._DEBUG = debug
         self._MIN_TASKS_FOR_CONCURRENT = 2
         self._opener = opener
         self._languages = None

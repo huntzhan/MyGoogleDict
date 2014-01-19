@@ -6,15 +6,17 @@ from goslate import AdjustedGoslate
 
 class Translator:
 
-    def __init__(self, from_lang, to_lang, data):
+    def __init__(self, from_lang, to_lang, data, debug=False):
+        self._debug = debug
         self._from_lang = from_lang
         self._to_lang = to_lang
         self._data = data
 
     def translate(self):
-        gs = AdjustedGoslate()
+        _RECONNECT_TIMES = 5
+        reconnect_times = _RECONNECT_TIMES
 
-        reconnect_times = 5
+        gs = AdjustedGoslate(debug=self._debug)
         result = None
         while reconnect_times > 0:
             try:

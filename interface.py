@@ -28,27 +28,36 @@ def _assemble_data(raw_data):
         return ' '.join(raw_data)
 
 
+def _extract(arguements):
+    from_lang = arguements['-f']
+    to_lang = arguements['-t']
+    data = _assemble_data(arguements['<data>'])
+    reverse = arguements['--reverse']
+    # reverse langs
+    from_lang, to_lang = (to_lang, from_lang)\
+        if reverse else (from_lang, to_lang)
+
+    return from_lang, to_lang, data
+
+
 if __name__ == '__main__':
     arguements = docopt(__doc__, version='0.1')
-    record = Record()
+
+    record = Record(debug=arguements['--debug'])
     if arguements['<data>']:
         # translation
-        from_lang = arguements['-f']
-        to_lang = arguements['-t']
-        reverse = arguements['--reverse']
-        data = _assemble_data(arguements['<data>'])
-        # reverse langs
-        from_lang, to_lang = (to_lang, from_lang)\
-            if reverse else (from_lang, to_lang)
-        # do translation
-        translator = Translator(from_lang, to_lang, data)
+        from_lang, to_lang, data = _extract(arguements)
 
+        # translate data
+        translator = Translator(from_lang, to_lang, data,
+                                debug=arguements['--debug'])
         # result is a dictionary contains decoded infomation of the
         # trnaslation.
         result = translator.translate()
         translator.display_result(result)
         # add record
-        record.add(from_lang, to_lang, data, result)
+        record.add(from_lang, to_lang,
+                   data, result)
 
     elif arguements['--record']:
         # display record
