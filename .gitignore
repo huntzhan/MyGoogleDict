@@ -1,3 +1,4 @@
 *.pyc
 LOG
-search_record.*
+record.xml.gz
+cache.xml

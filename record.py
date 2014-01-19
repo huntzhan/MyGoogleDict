@@ -32,7 +32,8 @@ def _ensure_decode(func):
 
 
 class Record:
-    FILE_NAME = 'search_record.xml.gz'
+    CACHE_FILE_NAME = 'cache.xml'
+    RECORD_FILE_NAME = 'record.xml.gz'
     ROOT = 'root'
     RECORD = 'record'
     FROM_LANG = 'from_lang'
@@ -48,9 +49,14 @@ class Record:
     def __init__(self):
         # get path of search record
         self._dir_path = self._get_dir_path()
-        self._file_path = os.path.join(
+
+        self._cache_path = os.path.join(
             self._dir_path,
-            Record.FILE_NAME,
+            Record.CACHE_FILE_NAME,
+        )
+        self._record_path = os.path.join(
+            self._dir_path,
+            Record.RECORD_FILE_NAME,
         )
 
     def _get_dir_path(self):
@@ -59,9 +65,10 @@ class Record:
         dir_path, _ = os.path.split(path)
         return dir_path
 
-    def _load_xml(self, xml_path):
+    def _load_xml(self, file_path, gzip_enable=False):
+        openfile = gzip.open if gzip_enable else open
         try:
-            with gzip.open(xml_path) as f:
+            with openfile(file_path) as f:
                 xml_content = f.read()
             xml = ET.fromstring(xml_content)
         except:
@@ -69,10 +76,42 @@ class Record:
             xml = ET.Element(Record.ROOT)
         return xml
 
-    def _write_xml(self, xml):
+    def _write_xml(self, xml, file_path,  gzip_enable=False):
         raw_xml = ET.tostring(xml, encoding=_UTF8)
-        with gzip.open(self._file_path, 'wb') as f:
+
+        openfile = gzip.open if gzip_enable else open
+        with openfile(file_path, 'wb') as f:
             f.write(raw_xml)
+
+    def _judge_merge(self, file_path):
+        # judge merge based on the file size(in bytes) pointed by file_path
+        MAX_SIZE = 65535
+        try:
+            file_size = os.path.getsize(file_path)
+        except:
+            # file not exist, force to merge.
+            file_size = MAX_SIZE + 1
+
+        if file_size > MAX_SIZE:
+            return True
+        else:
+            return False
+
+    def _merge_records_from_cache(self, record_path, cache_path,
+                                  force_merge=False):
+        if not self._judge_merge(cache_path)\
+                and not force_merge:
+            return
+        # merge file.
+        record_xml = self._load_xml(self._record_path, gzip_enable=True)
+        cache_xml = self._load_xml(self._cache_path)
+
+        for node in cache_xml:
+            record_xml.append(node)
+        cache_xml.clear()
+
+        self._write_xml(record_xml, self._record_path, gzip_enable=True)
+        self._write_xml(cache_xml, self._cache_path)
 
     @_ensure_decode
     def add(self,
@@ -82,9 +121,9 @@ class Record:
             result):
 
         # read xml record file
-        record_xml = self._load_xml(self._file_path)
+        cache_xml = self._load_xml(self._cache_path)
 
-        new_record = ET.SubElement(record_xml, Record.RECORD)
+        new_record = ET.SubElement(cache_xml, Record.RECORD)
 
         # sub nodes
         from_lang_node = ET.SubElement(new_record, Record.FROM_LANG)
@@ -117,11 +156,21 @@ class Record:
                     meaning_node = ET.SubElement(pos_node, Record.MEANING)
                     meaning_node.text = val
 
-        # save content
-        self._write_xml(record_xml)
+        # save content to cache
+        self._write_xml(cache_xml, self._cache_path)
+        # judge merge
+        self._merge_records_from_cache(self._record_path, self._cache_path)
 
     def display(self):
-        record_xml = self._load_xml(self._file_path)
+        # merge first
+        self._merge_records_from_cache(
+            self._record_path,
+            self._cache_path,
+            force_merge=True,
+        )
+
+        # targeting on record file
+        record_xml = self._load_xml(self._record_path, gzip_enable=True)
         records = []
         for record in record_xml:
             extract_data = (
