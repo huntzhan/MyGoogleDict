@@ -2,7 +2,6 @@
 """
 Usage: mgd [--debug] [-f <from_lang>] [-t <to_lang>] [-v|--reverse] <data>...
        mgd [--debug] -r|--record
-       mgd -h|--help
 
 Options:
     -f <from_lang>  input language [default: en]

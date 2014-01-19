@@ -1,9 +1,12 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 import os
+from share import debug_return_val
+from share import decorate_all_methods
 from goslate import AdjustedGoslate
 
 
+@decorate_all_methods(debug_return_val)
 class Translator:
 
     def __init__(self, from_lang, to_lang, data, debug=False):
