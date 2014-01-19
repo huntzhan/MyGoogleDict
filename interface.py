@@ -4,8 +4,8 @@ Usage: mgd [--debug] [-f <from_lang>] [-t <to_lang>] [-v|--reverse] <data>...
        mgd [--debug] -r|--record
 
 Options:
-    -f <from_lang>  input language [default: en]
-    -t <to_lang>    ouput language [default: zh-CN]
+    -f <from_lang>  input language [default: {default_from_lang}]
+    -t <to_lang>    ouput language [default: {default_to_lang}]
     -v --reverse    reverse -f and -t
     -r --record     display search record
     --debug         display runtime information
@@ -13,6 +13,7 @@ Options:
 from docopt import docopt
 from translate import Translator
 from record import Record
+import config
 
 
 def _assemble_data(raw_data):
@@ -39,8 +40,18 @@ def _extract(arguements):
     return from_lang, to_lang, data
 
 
+def _set_up_doc(doc):
+    return doc.format(
+        default_from_lang=config.default_from_lang,
+        default_to_lang=config.default_to_lang,
+    )
+
+
 if __name__ == '__main__':
-    arguements = docopt(__doc__, version='0.1')
+    arguements = docopt(
+        _set_up_doc(__doc__),
+        version='0.1'
+    )
 
     record = Record(debug=arguements['--debug'])
     if arguements['<data>']:
