@@ -2,7 +2,7 @@
 
 MyGoogleDict is a command line tool which communicates with google translation server. With the consideration of my personal needs, MyGoogleDict should fulfill the requirements as follow:
 
-1. Communicate with [translate.google.com](translate.google.com) for translation bussiness.
+1. Communicate with [translate.google.com](http://translate.google.cn/) for translation bussiness.
 1. Support various languages.
 1. Support translation of both a single word and multi-words sentences.
 1. Record and display the search history of user.
