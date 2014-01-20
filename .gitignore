@@ -1,4 +1,5 @@
 *.pyc
 LOG
+Python
 record.xml.gz
 cache.xml
