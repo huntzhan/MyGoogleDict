@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 import os
 from share import debug_return_val
 from share import decorate_all_methods
-from goslate import AdjustedGoslate
+from goslate_proxy import AdjustedGoslate
 
 
 @decorate_all_methods(debug_return_val)

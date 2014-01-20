@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 from functools import wraps
 from share import debug_return_val
 from share import decorate_all_methods
-from goslate import AdjustedGoslate
+from goslate_proxy import AdjustedGoslate
 
 _UTF8 = 'UTF-8'
 _ISO_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
