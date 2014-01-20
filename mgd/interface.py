@@ -13,7 +13,7 @@ Options:
 from docopt import docopt
 from translate import Translator
 from record import Record
-import config
+import data_io
 
 
 def _assemble_data(raw_data):
@@ -40,16 +40,9 @@ def _extract(arguements):
     return from_lang, to_lang, data
 
 
-def _set_up_doc(doc):
-    return doc.format(
-        default_from_lang=config.default_from_lang,
-        default_to_lang=config.default_to_lang,
-    )
-
-
 if __name__ == '__main__':
     arguements = docopt(
-        _set_up_doc(__doc__),
+        data_io.set_up_doc(__doc__),
         version='0.1'
     )
 
