@@ -69,28 +69,9 @@ Directory MyGoogleDict contains following files:
 Installation
 ------------
 
-Step 1:
-
 ::
 
     pip install mgd
-
-The package mgd, the abbreviation of 'MyGoogleDict', would be setuped in
-you PYTHONPATH.
-
-Step 2:
-
-::
-
-    $ sudo python
-    ...
-    >>> from mgd import install
-    >>> install.run()
-
-where install.run() make a symbolic link in your PATH, in order to
-enable the 'mgd' command. Since install.run() would change the
-authorization of interface.py(to assure interface.py is
-executable), 'sudo' prefix could be necessary.
 
 Data Storage and Configuration
 ------------------------------

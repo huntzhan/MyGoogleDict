@@ -16,12 +16,12 @@ setup(
     install_requires=['docopt==0.6.1', 'goslate==1.1.2'],
     packages=['mgd'],
 
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'mgd = mgd.interface:main',
-        ]
+        ],
     },
-    classifiers = [
+    classifiers=[
         'Development Status :: 3 - Alpha',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
