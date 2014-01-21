@@ -60,8 +60,6 @@ class Record:
 
     def _write_xml(self, xml, field_name):
         raw_xml = ET.tostring(xml, encoding=_UTF8)
-
-        assert hasattr(self._record_io, field_name)
         setattr(self._record_io, field_name, raw_xml)
 
     def _merge_records_from_cache(self, force_merge=False):

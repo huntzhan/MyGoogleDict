@@ -22,6 +22,7 @@ def _get_env_var(name):
     var = os.environ.get(name, None)
     if var is None or not var:
         raise Exception(_ERROR_CONTENT.format(name))
+    # succeeded, print it.
     print('{}: {}'.format(name, var))
     return var
 
@@ -33,7 +34,7 @@ def _enter_install_path(PATH):
         if install_path in paths:
             break
         else:
-            print('Invalid input.')
+            print('Invalid input. Try Again.')
     return install_path
 
 
@@ -43,7 +44,7 @@ def _make_symbol_link(install_path):
     os.chmod(source, 0b111111111)
     link = os.path.join(install_path, 'mgd')
     try:
-        os.link(source, link)
+        os.symlink(source, link)
         print('Successfully made symbolic link {}'.format(link))
     except Exception as e:
         print('Can not make symbolic link {}'.format(link))

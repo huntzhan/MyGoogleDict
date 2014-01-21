@@ -4,7 +4,7 @@ import gzip
 import ConfigParser
 
 
-_DEBUG = True
+_DEBUG = False
 
 
 # _DATA_DIR hard coded the directory contains records and configuation file.
