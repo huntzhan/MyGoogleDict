@@ -10,8 +10,17 @@ setup(
 
     url='https://pypi.python.org/pypi/mgd',
     license='MIT',
-    descrption='command-line front end of google translation serve.',
+    description='command-line front end of google translation serve.',
+    long_description=open('README.rst').read(),
 
     install_requires=['docopt==0.6.1', 'goslate==1.1.2'],
     packages=['mgd'],
+
+    classifiers = [
+        'Development Status :: 3 - Alpha',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Operating System :: OS Independent',
+        'License :: OSI Approved :: MIT License',
+    ],
 )
