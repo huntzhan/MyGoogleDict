@@ -89,7 +89,7 @@ Step 2:
 
 where install.run() make a symbolic link in your PATH, in order to
 enable the 'mgd' command. Since install.run() would change the
-authorization of **interface.py**(to assure **interface.py** is
+authorization of interface.py(to assure interface.py is
 executable), 'sudo' prefix could be necessary.
 
 Data Storage and Configuration
