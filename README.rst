@@ -1,13 +1,17 @@
 Requirement
 ===========
 
-MyGoogleDict is a command line tool which communicates with google
+MyGoogleDict is a command-line program which communicates with google
 translation server. With the consideration of my personal needs,
 MyGoogleDict should fulfill the requirements as follow:
 
-1. Communicate with `translate.google.com`_ for translation bussiness.
-2. Support various languages.
+1. Communicate with
+   `translate.google.com <http://translate.google.cn/>`_ for translation
+   bussiness.
+2. Support translation of various languages.
 3. Support translation of both a single word and multi-words sentences.
+   Moreover, the program should classify results of translation with
+   respect to their part of speech.
 4. Record and display the search history of user.
 5. Human readable manual in command line interface.
 
@@ -17,15 +21,12 @@ Design
 Depandancy and Resoureces
 -------------------------
 
-docopt
-~~~~~~
+Depandancies of the program are as follows:
 
-`docopt`_ is adopt for parsing the command arguments.
-
-goslate
-~~~~~~~
-
-`goslate`_ handles the communication with google translation server.
+-  `docopt <https://github.com/docopt/docopt>`_ v0.6.1 is adopt for
+   parsing arguments.
+-  `goslate <http://pythonhosted.org/goslate/>`_ v1.1.2 handles the
+   communication with google translation server.
 
 Bussiness
 ---------
@@ -48,11 +49,9 @@ Here is the avaliable inputs:
         -r --record     display search record
         --debug         display runtime information
 
-where and should be the language arguments, should be found in a list of
-`avaliable languages`_ of google translation serve.
-
-Records of translation are stored in **cache.xml** and
-**record.xml.gz**.
+where the value of language arguments and could be found in a list of
+`avaliable languages
+variable <https://developers.google.com/translate/v2/using_rest#language-params>`_.
 
 Implementation
 --------------
@@ -63,25 +62,41 @@ Directory MyGoogleDict contains following files:
 -  **translate.py** for the translation logic.
 -  **record.py** for reading and writing search records.
 -  **share.py** for shared code.
--  **config.py** currently for default languages configuration.
+-  **data\_io.py** for read/write records and configurations.
+-  **install.py** for install the program, which would be covered in
+   details later.
 
-Deployment
-----------
+Installation
+------------
 
-First, make sure that you can execute **interfact.py**:
-
-::
-
-    $ chmod +x interface.py
-
-Then, make a symbolic link in your PATH(/usr/local/bin is recommended)
-which points to **interface.py**, for example:
+Step 1:
 
 ::
 
-    $ ln -s interface.py /usr/local/bin/mgd
+    pip install mgd
 
-where mgd is the abbreviation of MyGoogleDict.
+The package mgd, the abbreviation of 'MyGoogleDict', would be setuped in
+you PYTHONPATH.
+
+Step 2:
+
+::
+
+    $ sudo python
+    ...
+    >>> from mgd import install
+    >>> install.run()
+
+where install.run() make a symbolic link in your PATH, in order to
+enable the 'mgd' command. Since install.run() would change the
+authorization of **interface.py**(to assure **interface.py** is
+executable), 'sudo' prefix could be necessary.
+
+Data Storage and Configuration
+------------------------------
+
+Records and configuration file would be stored in ~/.mgd/. Currently,
+you can configure the default languages of the program.
 
 Usage
 -----
@@ -111,9 +126,3 @@ Example of usage:
     [测试][Test]
     [this is a sentence.][这是一个句子。]
 
-If you want to change the default languages, just modify **config.py**.
-
-.. _translate.google.com: http://translate.google.cn/
-.. _docopt: https://github.com/docopt/docopt
-.. _goslate: http://pythonhosted.org/goslate/
-.. _avaliable languages: https://developers.google.com/translate/v2/using_rest#language-params

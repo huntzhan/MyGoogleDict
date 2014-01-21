@@ -51,7 +51,7 @@ def _make_symbol_link(install_path):
         raise e
 
 
-def install():
+def run():
     if platform.system() == 'Windows':
         print('Windows Not Support. Please install mgd manually.')
         return
