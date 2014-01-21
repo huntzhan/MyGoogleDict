@@ -40,7 +40,7 @@ def _extract(arguements):
     return from_lang, to_lang, data
 
 
-if __name__ == '__main__':
+def main():
     arguements = docopt(
         data_io.set_up_doc(__doc__),
         version='0.1'
@@ -67,3 +67,6 @@ if __name__ == '__main__':
         record.display()
     else:
         raise Exception('No Implemented Yet.')
+
+if __name__ == '__main__':
+    main()
