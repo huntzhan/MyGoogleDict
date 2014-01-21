@@ -12,6 +12,7 @@ if _DEBUG:
     _DATA_DIR = '/Users/haoxun/Data/Project/MyGoogleDict/.mgd'
 else:
     _DATA_DIR = '~/.mgd'
+
 _CONFIG_FILENAME = 'config'
 _CACHE_FILENAME = 'cache.xml'
 _RECORD_FILENAME = 'record.xml.gz'
@@ -57,12 +58,20 @@ class RecordIO(object):
         with openfile(path, 'wb') as f:
             f.write(content)
 
+    ############
+    # Cache IO #
+    ############
     def _read_cache(self):
         return self._read_file(self._cache_path)
 
     def _write_cache(self, content):
         self._write_file(content, self._cache_path)
 
+    cache = property(_read_cache, _write_cache)
+
+    #############
+    # Record IO #
+    #############
     def _read_record(self):
         return self._read_file(self._record_path,
                                gzip_enable=True)
@@ -71,6 +80,11 @@ class RecordIO(object):
         self._write_file(content, self._record_path,
                          gzip_enable=True)
 
+    record = property(_read_record, _write_record)
+
+    ##############
+    # Merge Flag #
+    ##############
     def _judge_merge(self):
         # hardcode the threshold size of cache .
         MAX_SIZE = 65535
@@ -85,8 +99,6 @@ class RecordIO(object):
         else:
             return False
 
-    cache = property(_read_cache, _write_cache)
-    record = property(_read_record, _write_record)
     merge_flag = property(_judge_merge)
 
 
