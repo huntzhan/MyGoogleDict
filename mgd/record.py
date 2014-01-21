@@ -1,18 +1,15 @@
 from __future__ import print_function
-import os
-import gzip
-import inspect
 from datetime import datetime
 import xml.etree.ElementTree as ET
 from functools import wraps
 from share import debug_return_val
 from share import decorate_all_methods
 from goslate_proxy import AdjustedGoslate
+from data_io import RecordIO
+
 
 _UTF8 = 'UTF-8'
 _ISO_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
-_CACHE_FILE_NAME = 'cache.xml'
-_RECORD_FILE_NAME = 'record.xml.gz'
 _ROOT = 'root'
 _RECORD = 'record'
 _FROM_LANG = 'from_lang'
@@ -50,71 +47,37 @@ class Record:
 
     def __init__(self, debug=False):
         self._debug = debug
-        # get path of search record
-        self._dir_path = self._get_dir_path()
+        self._record_io = RecordIO()
 
-        self._cache_path = os.path.join(
-            self._dir_path,
-            _CACHE_FILE_NAME,
-        )
-        self._record_path = os.path.join(
-            self._dir_path,
-            _RECORD_FILE_NAME,
-        )
-
-    def _get_dir_path(self):
-        dir = inspect.getmodule(self)
-        path = dir.__file__
-        dir_path, _ = os.path.split(path)
-        return dir_path
-
-    def _load_xml(self, file_path, gzip_enable=False):
-        openfile = gzip.open if gzip_enable else open
+    def _load_xml(self, field_name):
         try:
-            with openfile(file_path) as f:
-                xml_content = f.read()
+            xml_content = getattr(self._record_io, field_name)
             xml = ET.fromstring(xml_content)
         except:
             # new one
             xml = ET.Element(_ROOT)
         return xml
 
-    def _write_xml(self, xml, file_path,  gzip_enable=False):
+    def _write_xml(self, xml, field_name):
         raw_xml = ET.tostring(xml, encoding=_UTF8)
 
-        openfile = gzip.open if gzip_enable else open
-        with openfile(file_path, 'wb') as f:
-            f.write(raw_xml)
+        assert hasattr(self._record_io, field_name)
+        setattr(self._record_io, field_name, raw_xml)
 
-    def _judge_merge(self, file_path):
-        # judge merge based on the file size(in bytes) pointed by file_path
-        MAX_SIZE = 65535
-        try:
-            file_size = os.path.getsize(file_path)
-        except:
-            # file not exist, force to merge.
-            file_size = MAX_SIZE + 1
-
-        if file_size > MAX_SIZE:
-            return True
-        else:
-            return False
-
-    def _merge_records_from_cache(self, record_path, cache_path,
-                                  force_merge=False):
-        if not self._judge_merge(cache_path)\
-                and not force_merge:
+    def _merge_records_from_cache(self, force_merge=False):
+        if not self._record_io.merge_flag and not force_merge:
             return
-        # merge file.
-        record_xml = self._load_xml(self._record_path, gzip_enable=True)
-        cache_xml = self._load_xml(self._cache_path)
+        # load
+        record_xml = self._load_xml('record')
+        cache_xml = self._load_xml('cache')
 
         for node in cache_xml:
             record_xml.append(node)
         cache_xml.clear()
 
-        self._write_xml(record_xml, self._record_path, gzip_enable=True)
-        self._write_xml(cache_xml, self._cache_path)
+        # write
+        self._write_xml(record_xml, 'record')
+        self._write_xml(cache_xml, 'cache')
 
     @_ensure_decode
     def add(self,
@@ -124,7 +87,7 @@ class Record:
             result):
 
         # read xml record file
-        cache_xml = self._load_xml(self._cache_path)
+        cache_xml = self._load_xml('cache')
 
         new_record = ET.SubElement(cache_xml, _RECORD)
 
@@ -160,20 +123,16 @@ class Record:
                     meaning_node.text = val
 
         # save content to cache
-        self._write_xml(cache_xml, self._cache_path)
+        self._write_xml(cache_xml, 'cache')
         # judge merge
-        self._merge_records_from_cache(self._record_path, self._cache_path)
+        self._merge_records_from_cache()
 
     def display(self):
         # merge first
-        self._merge_records_from_cache(
-            self._record_path,
-            self._cache_path,
-            force_merge=True,
-        )
+        self._merge_records_from_cache(force_merge=True)
 
         # targeting on record file
-        record_xml = self._load_xml(self._record_path, gzip_enable=True)
+        record_xml = self._load_xml('record')
         records = []
         for record in record_xml:
             extract_data = (
