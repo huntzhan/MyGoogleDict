@@ -1,6 +1,7 @@
 from __future__ import print_function
 import os
 import inspect
+import platform
 
 
 try:
@@ -21,6 +22,8 @@ def _get_env_var(name):
     var = os.environ.get(name, None)
     if var is None or not var:
         raise Exception(_ERROR_CONTENT.format(name))
+    print('{}: {}'.format(name, var))
+    return var
 
 
 def _enter_install_path(PATH):
@@ -36,16 +39,22 @@ def _enter_install_path(PATH):
 
 def _make_symbol_link(install_path):
     source = _get_path('interface.py')
+    # ensure executable
+    os.chmod(source, 0b111111111)
     link = os.path.join(install_path, 'mgd')
     try:
-        os.symlink(source, link)
-    except:
+        os.link(source, link)
+        print('Successfully made symbolic link {}'.format(link))
+    except Exception as e:
         print('Can not make symbolic link {}'.format(link))
-    print('Successfully made symbolic link {}'.format(link))
+        raise e
 
 
 def install():
+    if platform.system() == 'Windows':
+        print('Windows Not Support. Please install mgd manually.')
+        return
+
     PATH = _get_env_var('PATH')
-    print('PATH: {}'.format(PATH))
     install_path = _enter_install_path(PATH)
     _make_symbol_link(install_path)

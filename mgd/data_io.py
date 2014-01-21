@@ -11,7 +11,7 @@ _DEBUG = True
 if _DEBUG:
     _DATA_DIR = '/Users/haoxun/Data/Project/MyGoogleDict/.mgd'
 else:
-    _DATA_DIR = '~/.mgd'
+    _DATA_DIR = os.path.expanduser('~/.mgd')
 
 _CONFIG_FILENAME = 'config'
 _CACHE_FILENAME = 'cache.xml'
