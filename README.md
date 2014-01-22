@@ -36,7 +36,8 @@ Here is the avaliable inputs:
     	
 where the value of language arguments <from_lang> and <to_lang> could be found in a list of [avaliable languages variable](https://developers.google.com/translate/v2/using_rest#language-params).
 
-##Implementation
+#Implementation
+## Code Files
 Directory MyGoogleDict contains following files:
 
 * **interface.py** for the job of argument parsing.
@@ -44,19 +45,38 @@ Directory MyGoogleDict contains following files:
 * **record.py** for reading and writing search records.
 * **share.py** for shared code.
 * **data_io.py** for read/write records and configurations.
-* **install.py** for install the program, which would be covered in details later.
+
+## Release and To-Do List
+### To-Do List
+#### 0.2
+* Introduce more error dectection strategy, such as dectecting misspelling input.
+* Implement unit tests.
+* Design record management strategy.
+* Design a well-formatted user report which displays user's searching history in a period(maybe a month).
+
+### Release List
+#### 0.1 
+
+* Implement basic functionality, such as display the result of translation, read and write records.
+* Packaged and uploaded the project, enable user to download it through 'pip install' command.
 
 
-##Installation
+
+#Installation
 
 	pip install mgd
 
 
 ##Data Storage and Configuration
 
-Records and configuration file would be stored in ~/.mgd/. Currently, you can configure the default languages of the program.
+Records and configuration file would be stored in **~/.mgd/**:
 
-##Usage
+* **~/.mgd/config** stroes the configuration of mgd. Currently, you can configure the default languages of the program.
+* **~/.mgd/cache.xml** serves as a cache to record.xml.gz.
+* **~/.mgd/config/record.xml.gz** stores records in xml.gz format.
+
+
+#Usage
 Example of usage:
 
 	$ mgd -r
