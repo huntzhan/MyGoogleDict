@@ -50,10 +50,12 @@ Directory MyGoogleDict contains following files:
 ### To-Do List
 #### 0.2
 * Introduce more error dectection strategy, such as dectecting misspelling input.
-* Implement unit tests.
 * Design record management strategy.
 * Design a well-formatted user report which displays user's searching history in a period(maybe a month).
+* Implement unit tests.
+* *nix standard IO support.
 * Detect the input language automatically.
+* **Fix bugs: Wrong usage of goslate.**
 
 ### Release List
 #### 0.1 
