@@ -53,6 +53,7 @@ Directory MyGoogleDict contains following files:
 * Implement unit tests.
 * Design record management strategy.
 * Design a well-formatted user report which displays user's searching history in a period(maybe a month).
+* Detect the input language automatically.
 
 ### Release List
 #### 0.1 
@@ -73,7 +74,7 @@ Records and configuration file would be stored in **~/.mgd/**:
 
 * **~/.mgd/config** stroes the configuration of mgd. Currently, you can configure the default languages of the program.
 * **~/.mgd/cache.xml** serves as a cache to record.xml.gz.
-* **~/.mgd/config/record.xml.gz** stores records in xml.gz format.
+* **~/.mgd/record.xml.gz** stores records in xml.gz format.
 
 
 #Usage
