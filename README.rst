@@ -6,8 +6,8 @@ translation server. With the consideration of my personal needs,
 MyGoogleDict should fulfill the requirements as follow:
 
 1. Communicate with
-   `translate.google.com <http://translate.google.cn/>`_ for translation
-   bussiness.
+   `translate.google.com <http://translate.google.cn/>`__ for
+   translation bussiness.
 2. Support translation of various languages.
 3. Support translation of both a single word and multi-words sentences.
    Moreover, the program should classify results of translation with
@@ -23,9 +23,9 @@ Depandancy and Resoureces
 
 Depandancies of the program are as follows:
 
--  `docopt <https://github.com/docopt/docopt>`_ v0.6.1 is adopt for
+-  `docopt <https://github.com/docopt/docopt>`__ v0.6.1 is adopt for
    parsing arguments.
--  `goslate <http://pythonhosted.org/goslate/>`_ v1.1.2 handles the
+-  `goslate <http://pythonhosted.org/goslate/>`__ v1.1.2 handles the
    communication with google translation server.
 
 Bussiness
@@ -51,10 +51,13 @@ Here is the avaliable inputs:
 
 where the value of language arguments and could be found in a list of
 `avaliable languages
-variable <https://developers.google.com/translate/v2/using_rest#language-params>`_.
+variable <https://developers.google.com/translate/v2/using_rest#language-params>`__.
 
 Implementation
---------------
+==============
+
+Code Files
+----------
 
 Directory MyGoogleDict contains following files:
 
@@ -63,11 +66,39 @@ Directory MyGoogleDict contains following files:
 -  **record.py** for reading and writing search records.
 -  **share.py** for shared code.
 -  **data\_io.py** for read/write records and configurations.
--  **install.py** for install the program, which would be covered in
-   details later.
+
+Release and To-Do List
+----------------------
+
+To-Do List
+~~~~~~~~~~
+
+0.2
+^^^
+
+-  Introduce more error dectection strategy, such as dectecting
+   misspelling input.
+-  Design record management strategy.
+-  Design a well-formatted user report which displays user's searching
+   history in a period(maybe a month).
+-  Implement unit tests.
+-  \*nix standard IO support.
+-  Detect the input language automatically.
+-  **Fix bugs: Wrong usage of goslate.**
+
+Release List
+~~~~~~~~~~~~
+
+0.1
+^^^
+
+-  Implement basic functionality, such as display the result of
+   translation, read and write records.
+-  Packaged and uploaded the project, enable user to download it through
+   'pip install' command.
 
 Installation
-------------
+============
 
 ::
 
@@ -76,11 +107,15 @@ Installation
 Data Storage and Configuration
 ------------------------------
 
-Records and configuration file would be stored in ~/.mgd/. Currently,
-you can configure the default languages of the program.
+Records and configuration file would be stored in **~/.mgd/**:
+
+-  **~/.mgd/config** stroes the configuration of mgd. Currently, you can
+   configure the default languages of the program.
+-  **~/.mgd/cache.xml** serves as a cache to record.xml.gz.
+-  **~/.mgd/record.xml.gz** stores records in xml.gz format.
 
 Usage
------
+=====
 
 Example of usage:
 
