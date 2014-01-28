@@ -2,9 +2,7 @@ from __future__ import print_function
 from datetime import datetime
 import xml.etree.ElementTree as ET
 from functools import wraps
-from share import debug_return_val
-from share import decorate_all_methods
-from goslate_proxy import AdjustedGoslate
+import share
 from data_io import RecordIO
 
 
@@ -42,7 +40,7 @@ def _ensure_decode(func):
     return wrapper
 
 
-@decorate_all_methods(debug_return_val)
+@share.decorate_all_methods(share.debug_return_val)
 class Record:
 
     def __init__(self, debug=False):
@@ -106,17 +104,20 @@ class Record:
 
         # construct result node
         sentence_node = ET.SubElement(result_node, _SENTENCE)
-        sentence_node.text = result[AdjustedGoslate.SENTENCE]
+        sentence_node.text = ''.join(map(
+            lambda x: x[share.TRANS],
+            result[share.SENTENCES],
+        ))
 
         # multiple explanations
-        if AdjustedGoslate.DICT in result:
+        if share.DICT in result:
             dict_node = ET.SubElement(result_node, _DICT)
-            for pos, vals in result.get(AdjustedGoslate.DICT).items():
+            for entity in result.get(share.DICT):
                 pos_node = ET.SubElement(dict_node, _POS)
                 # pos could be empty, I don't know why.
-                pos_node.text = pos or 'error_pos'
+                pos_node.text = entity[share.POS] or 'error_pos'
 
-                for val in vals:
+                for val in entity[share.TERMS]:
                     meaning_node = ET.SubElement(pos_node, _MEANING)
                     meaning_node.text = val
 

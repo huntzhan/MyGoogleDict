@@ -2,6 +2,6 @@
 .DS_Store
 *.pyc
 LOG
-Python
+Python*
 record.xml.gz
 cache.xml

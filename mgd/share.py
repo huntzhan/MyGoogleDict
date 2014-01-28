@@ -3,6 +3,13 @@ from functools import wraps
 from pprint import pprint
 
 
+SENTENCES = 'sentences'
+TRANS = 'trans'
+DICT = 'dict'
+TERMS = 'terms'
+POS = 'pos'
+
+
 def debug_return_val(func):
     def _print_func(prefix, name):
         line = "{}: {}".format(prefix, name)
