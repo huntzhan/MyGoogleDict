@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 """
-Usage: mgd [--debug] [-f <from_lang>] [-t <to_lang>] [-v|--reverse] <data>...
-       mgd [--debug] -r|--record
+Usage: mgd [-f <from_lang>] [-t <to_lang>]
+           [-v|--reverse] [-s|--speak] <data>...
+       mgd -r|--record
 
 Options:
     -f <from_lang>  input language [default: {default_from_lang}]
     -t <to_lang>    ouput language [default: {default_to_lang}]
     -v --reverse    reverse -f and -t
+    -s --speak      speak out the result.
     -r --record     display search record
-    --debug         display runtime information
 """
 from docopt import docopt
 from translate import Translator
+from translate import Speaker
 from record import Record
 import data_io
 
@@ -46,18 +48,22 @@ def main():
         version='0.2'
     )
 
-    record = Record(debug=arguements['--debug'])
+    record = Record()
     if arguements['<data>']:
         # translation
         from_lang, to_lang, data = _extract(arguements)
 
         # translate data
-        translator = Translator(from_lang, to_lang, data,
-                                debug=arguements['--debug'])
+        translator = Translator(from_lang, to_lang, data)
         # result is a dictionary contains decoded infomation of the
         # trnaslation.
         result = translator.translate()
         translator.display_result(result)
+
+        if arguements['--speak']:
+            speaker = Speaker(from_lang, data)
+            speaker.speak()
+
         # add record
         record.add(from_lang, to_lang,
                    data, result)

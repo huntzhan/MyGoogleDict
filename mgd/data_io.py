@@ -109,7 +109,7 @@ class RecordIO(object):
     merge_flag = property(_judge_merge)
 
 
-class ConfigIO:
+class ConfigIO(object):
 
     def __init__(self):
         self._config = ConfigParser.ConfigParser()
@@ -138,10 +138,18 @@ class ConfigIO:
             default_to_lang=self._config.get(_SECTION_NAME, _TO_LANG),
         )
 
+    def get_playback_command(self):
+        return self._config.get(_SECTION_NAME, _AUDIO_PLAYBACK_COMMAND)
+
 
 # mantain a global configuration handler
-config = ConfigIO()
+_config_io = ConfigIO()
 
 
 def set_up_doc(doc):
-    return config.set_up_doc(doc)
+    return _config_io.set_up_doc(doc)
+
+
+def get_playback_command():
+    raw_command = _config_io.get_playback_command()
+    return raw_command.split(' ')

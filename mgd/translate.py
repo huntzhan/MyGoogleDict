@@ -1,8 +1,12 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 import os
+import subprocess
+import tempfile
 import share
 from google_translate_api import TranslateService
+from google_translate_api import TTSService
+import data_io
 
 
 @share.decorate_all_methods(share.debug_return_val)
@@ -39,3 +43,20 @@ class Translator:
         else:
             val = share.assemble_senteces_from_json(result)
             print(OUTPUT_FORMAT.format(share.SENTENCES, val))
+
+
+class Speaker:
+
+    def __init__(self, from_lang, data):
+        self._from_lang = from_lang
+        self._data = data
+
+    def speak(self):
+        tts = TTSService()
+        mpeg_binary = tts.get_mpeg_binary(self._from_lang, self._data)
+        playback_command = data_io.get_playback_command()
+
+        with tempfile.NamedTemporaryFile(bufsize=0) as f:
+            f.write(mpeg_binary)
+            playback_command.append(f.name)
+            subprocess.call(playback_command)
