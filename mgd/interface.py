@@ -8,7 +8,7 @@ Options:
     -f <from_lang>  input language [default: {default_from_lang}]
     -t <to_lang>    ouput language [default: {default_to_lang}]
     -v --reverse    reverse -f and -t
-    -s --speak      speak out the result.
+    -s --speak      speak out the result
     -r --record     display search record
 """
 from docopt import docopt

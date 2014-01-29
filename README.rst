@@ -25,8 +25,8 @@ Depandancies of the program are as follows:
 
 -  `docopt <https://github.com/docopt/docopt>`__ v0.6.1 is adopt for
    parsing arguments.
--  `goslate <http://pythonhosted.org/goslate/>`__ v1.1.2 handles the
-   communication with google translation server.
+-  `google\_translate\_api <https://github.com/haoxun/GoogleTranslateAPI>`__
+   v0.2 handles the communication with google translation server.
 
 Bussiness
 ---------
@@ -39,15 +39,16 @@ Here is the avaliable inputs:
 
 ::
 
-    Usage: mgd [--debug] [-f <from_lang>] [-t <to_lang>] [-v|--reverse] <data>...
-           mgd [--debug] -r|--record
+    Usage: mgd [-f <from_lang>] [-t <to_lang>]
+               [-v|--reverse] [-s|--speak] <data>...
+           mgd -r|--record
 
     Options:
         -f <from_lang>  input language [default: en]
         -t <to_lang>    ouput language [default: zh-CN]
         -v --reverse    reverse -f and -t
         -r --record     display search record
-        --debug         display runtime information
+        -s --speak      speak out the result
 
 where the value of language arguments and could be found in a list of
 `avaliable languages
@@ -73,7 +74,7 @@ Release and To-Do List
 To-Do List
 ~~~~~~~~~~
 
-0.2
+0.3
 ^^^
 
 -  Introduce more error dectection strategy, such as dectecting
@@ -84,10 +85,15 @@ To-Do List
 -  Implement unit tests.
 -  \*nix standard IO support.
 -  Detect the input language automatically.
--  **Fix bugs: Wrong usage of goslate.**
 
 Release List
 ~~~~~~~~~~~~
+
+0.2
+^^^
+
+-  Change dependency from goslate to google\_translate\_api.
+-  Enable TTS service.
 
 0.1
 ^^^
@@ -126,6 +132,9 @@ Example of usage:
     $ mgd test
     [verb] 检验, 试, 考, 测验, 验, 考查, 尝
     [noun] 测试, 试验, 试, 实验, 考试, 考验, 测验
+    $ mgd -s test
+    [verb] 检验, 试, 考, 测验, 验, 考查, 尝
+    [noun] 测试, 试验, 试, 实验, 考试, 考验, 测验
     $ mgd -t ja test
     [verb] 試す, 試みる
     [noun] テスト, 試験, 試し, 試練, 考査
@@ -136,6 +145,7 @@ Example of usage:
     $ mgd this is a sentence.
     [sentence] 这是一个句子。
     $ mgd -r
+    [test][测试]
     [test][测试]
     [test][テスト]
     [测试][Test]
