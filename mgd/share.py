@@ -10,6 +10,21 @@ TERMS = 'terms'
 POS = 'pos'
 
 
+def assemble_senteces_from_json(json):
+    sentences = map(
+        lambda x: x[TRANS],
+        json[SENTENCES],
+    )
+    return ''.join(sentences)
+
+
+def convert_dict_to_key_value_pairs(json):
+    for entity in json.get(DICT):
+        pos = entity[POS] or 'error_pos'
+        vals = [val for val in entity[TERMS]]
+        yield pos, vals
+
+
 def debug_return_val(func):
     def _print_func(prefix, name):
         line = "{}: {}".format(prefix, name)

@@ -43,7 +43,7 @@ def _extract(arguements):
 def main():
     arguements = docopt(
         data_io.set_up_doc(__doc__),
-        version='0.1'
+        version='0.2'
     )
 
     record = Record(debug=arguements['--debug'])
@@ -67,6 +67,7 @@ def main():
         record.display()
     else:
         raise Exception('No Implemented Yet.')
+
 
 if __name__ == '__main__':
     main()

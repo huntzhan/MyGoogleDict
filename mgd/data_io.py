@@ -4,14 +4,8 @@ import gzip
 import ConfigParser
 
 
-_DEBUG = False
-
-
 # _DATA_DIR hard coded the directory contains records and configuation file.
-if _DEBUG:
-    _DATA_DIR = '/Users/haoxun/Data/Project/MyGoogleDict/.mgd'
-else:
-    _DATA_DIR = os.path.expanduser('~/.mgd')
+_DATA_DIR = os.path.expanduser('~/.mgd')
 
 _CONFIG_FILENAME = 'config'
 _CACHE_FILENAME = 'cache.xml'
@@ -22,17 +16,30 @@ _RECORD_FILENAME = 'record.xml.gz'
 _SECTION_NAME = 'MyGoogleDict'
 _FROM_LANG = 'default_from_lang'
 _TO_LANG = 'default_to_lang'
+_AUDIO_PLAYBACK_COMMAND = 'audio_playback_command'
 
-# default content of configuration file.
-_DEFAULT_CONFIG_CONTENT = """
-[{section_name}]
-{from_lang}: en
-{to_lang}: zh-CN
-""".format(
-    section_name=_SECTION_NAME,
-    from_lang=_FROM_LANG,
-    to_lang=_TO_LANG,
-)
+
+_RAW_CONTENT = """
+[{}]
+{}: en
+{}: zh-CN
+{}: {}
+"""
+
+
+def _generate_default_config_content():
+    import platform
+    audio_player = 'afplay' if platform.system() == 'Darwin' else 'mpg123'
+
+    content = _RAW_CONTENT.format(
+        _SECTION_NAME,
+        _FROM_LANG,
+        _TO_LANG,
+        _AUDIO_PLAYBACK_COMMAND, audio_player,
+    )
+    return content
+
+_DEFAULT_CONFIG_CONTENT = _generate_default_config_content()
 
 
 class RecordIO(object):
@@ -132,6 +139,9 @@ class ConfigIO:
         )
 
 
+# mantain a global configuration handler
+config = ConfigIO()
+
+
 def set_up_doc(doc):
-    config = ConfigIO()
     return config.set_up_doc(doc)

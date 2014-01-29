@@ -1,7 +1,9 @@
 from __future__ import print_function
+
 from datetime import datetime
 import xml.etree.ElementTree as ET
 from functools import wraps
+
 import share
 from data_io import RecordIO
 
@@ -104,20 +106,18 @@ class Record:
 
         # construct result node
         sentence_node = ET.SubElement(result_node, _SENTENCE)
-        sentence_node.text = ''.join(map(
-            lambda x: x[share.TRANS],
-            result[share.SENTENCES],
-        ))
+        sentence_node.text = share.assemble_senteces_from_json(result)
 
         # multiple explanations
         if share.DICT in result:
             dict_node = ET.SubElement(result_node, _DICT)
-            for entity in result.get(share.DICT):
-                pos_node = ET.SubElement(dict_node, _POS)
-                # pos could be empty, I don't know why.
-                pos_node.text = entity[share.POS] or 'error_pos'
 
-                for val in entity[share.TERMS]:
+            pos_vals_pairs = share.convert_dict_to_key_value_pairs(result)
+            for pos, vals in pos_vals_pairs:
+                pos_node = ET.SubElement(dict_node, _POS)
+                pos_node.text = pos
+
+                for val in vals:
                     meaning_node = ET.SubElement(pos_node, _MEANING)
                     meaning_node.text = val
 

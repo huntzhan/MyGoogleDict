@@ -26,19 +26,16 @@ class Translator:
     @staticmethod
     def display_result(result):
         OUTPUT_FORMAT = '[{}] {}'
-        dictionary = result.get(share.DICT, None)
-        if dictionary:
+        if share.DICT in result:
             lines = []
-            for entity in dictionary:
+            pos_vals_pairs = share.convert_dict_to_key_value_pairs(result)
+            for pos, vals in pos_vals_pairs:
                 explanation = OUTPUT_FORMAT.format(
-                    entity[share.POS],
-                    ', '.join(entity[share.TERMS]),
+                    pos,
+                    ', '.join(vals),
                 )
                 lines.append(explanation)
             print(os.linesep.join(lines))
         else:
-            val = ''.join(map(
-                lambda x: x[share.TRANS],
-                result[share.SENTENCES]
-            ))
+            val = share.assemble_senteces_from_json(result)
             print(OUTPUT_FORMAT.format(share.SENTENCES, val))
