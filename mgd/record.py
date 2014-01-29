@@ -23,23 +23,6 @@ _MEANING = 'meaning'
 _TIME = 'time'
 
 
-def _ensure_decode(func):
-    def utf8_decoder(text):
-        try:
-            decoded = text.decode(_UTF8)
-        except:
-            # both decoded text and result(a dictionary variable contains
-            # decoded information) would trigger exception. In this case, just
-            # return the argument.
-            decoded = text
-        return decoded
-
-    @wraps(func)
-    def wrapper(self, *args, **kwargs):
-        decoded_args = map(utf8_decoder, args)
-        decoded_kwargs = {k: utf8_decoder(v) for k, v in kwargs.items()}
-        return func(self, *decoded_args, **decoded_kwargs)
-    return wrapper
 
 
 @share.decorate_all_methods(share.debug_return_val)
@@ -77,7 +60,7 @@ class Record:
         self._write_xml(record_xml, 'record')
         self._write_xml(cache_xml, 'cache')
 
-    @_ensure_decode
+    @share.ensure_decode
     def add(self,
             from_lang,
             to_lang,

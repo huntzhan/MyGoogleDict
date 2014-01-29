@@ -12,6 +12,7 @@ import data_io
 @share.decorate_all_methods(share.debug_return_val)
 class Translator:
 
+    @share.ensure_decode
     def __init__(self, from_lang, to_lang, data, debug=False):
         self._debug = debug
         self._from_lang = from_lang
@@ -47,6 +48,7 @@ class Translator:
 
 class Speaker:
 
+    @share.ensure_decode
     def __init__(self, from_lang, data):
         self._from_lang = from_lang
         self._data = data

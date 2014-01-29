@@ -9,6 +9,27 @@ DICT = 'dict'
 TERMS = 'terms'
 POS = 'pos'
 
+_UTF8 = 'UTF-8'
+
+
+def ensure_decode(func):
+    def utf8_decoder(text):
+        try:
+            decoded = text.decode(_UTF8)
+        except:
+            # both decoded text and result(a dictionary variable contains
+            # decoded information) would trigger exception. In this case, just
+            # return the argument.
+            decoded = text
+        return decoded
+
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        decoded_args = map(utf8_decoder, args)
+        decoded_kwargs = {k: utf8_decoder(v) for k, v in kwargs.items()}
+        return func(self, *decoded_args, **decoded_kwargs)
+    return wrapper
+
 
 def assemble_senteces_from_json(json):
     sentences = map(
