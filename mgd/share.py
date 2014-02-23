@@ -33,7 +33,7 @@ def ensure_decode(func):
     return wrapper
 
 
-def assemble_senteces_from_json_data(json_data):
+def assemble_senteces_from_json(json_data):
     """
     Return:
         Unicode strings.

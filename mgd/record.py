@@ -14,9 +14,9 @@ from mgd.share import (decorate_all_methods,
 from mgd.data_io import RecordIO
 
 try:
-    unicode
-except:
     str = unicode
+except:
+    pass
 
 
 class _GLOBAL:

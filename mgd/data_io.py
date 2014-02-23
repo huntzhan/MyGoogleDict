@@ -72,7 +72,7 @@ class RecordIO(object):
         """
 
         openfile = gzip.open if gzip_enable else open
-        with openfile(path, modw='rb') as f:
+        with openfile(path, 'rb') as f:
             content = f.read()
         return content
 
