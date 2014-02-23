@@ -89,6 +89,11 @@ To-Do List
 Release List
 ~~~~~~~~~~~~
 
+0.2.1
+^^^^^
+
+-  Fix bugs for python3.
+
 0.2
 ^^^
 

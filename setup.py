@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='mgd',
-    version='0.2',
+    version='0.2.1',
     author='Zhan Haoxun',
     author_email='programmer.zhx@gmail.com',
 
