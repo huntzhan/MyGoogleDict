@@ -13,17 +13,18 @@ Options:
     -r --record     display search record
 """
 
+from __future__ import unicode_literals
+from __future__ import absolute_import
+
 from docopt import docopt
+
 from mgd.translate import Translator
 from mgd.translate import Speaker
 from mgd.record import Record
-from mgd import data_io
+from mgd.data_io import set_up_doc
 
 
 def _assemble_data(raw_data):
-    # raw_data should be a list, according to docopt's document.
-    assert type(raw_data) is list
-
     if len(raw_data) == 1:
         # single word
         return raw_data[0]
@@ -46,7 +47,7 @@ def _extract(arguements):
 
 def main():
     arguements = docopt(
-        data_io.set_up_doc(__doc__),
+        set_up_doc(__doc__),
         version='0.2.1'
     )
 
