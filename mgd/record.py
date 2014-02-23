@@ -44,11 +44,10 @@ class Record:
 
     def _load_xml(self, field_name):
         try:
+            # WTF? fromstring only accept bytes?
             xml_content = getattr(self._record_io, field_name)
-            # Since fromstring() only accept string, xml_content, which is
-            # stored in bytes, must be decode.
-            xml = ET.fromstring(xml_content.decode(_GLOBAL.UTF8))
-        except:
+            xml = ET.fromstring(xml_content)
+        except Exception as e:
             # "The element name, attribute names, and attribute values can be
             # either bytestrings or Unicode strings." Thus, unicode should be
             # ok.
@@ -56,9 +55,8 @@ class Record:
         return xml
 
     def _write_xml(self, xml, field_name):
-        # raw_xml is the string representation of an XML element, encoded in
-        # UTF-8 and stored in bytes.
-        raw_xml = ET.tostring(xml, encoding=_GLOBAL.UTF8)
+        # Holly Shit, ASCII encoding works.
+        raw_xml = ET.tostring(xml)
         setattr(self._record_io, field_name, raw_xml)
 
     def _merge_records_from_cache(self, force_merge=False):
