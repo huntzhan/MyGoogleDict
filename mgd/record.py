@@ -9,7 +9,8 @@ from mgd.share import (decorate_all_methods,
                        debug_return_val,
                        ensure_decode,
                        assemble_senteces_from_json,
-                       convert_dict_to_key_value_pairs,)
+                       convert_dict_to_key_value_pairs,
+                       DICT,)
 from mgd.data_io import RecordIO
 
 try:
@@ -130,7 +131,7 @@ class Record:
         sentence_node.text = assemble_senteces_from_json(result)
 
         # multiple explanations
-        if _GLOBAL.DICT in result:
+        if DICT in result:
             dict_node = ET.SubElement(result_node, _GLOBAL.DICT)
 
             pos_vals_pairs = convert_dict_to_key_value_pairs(result)

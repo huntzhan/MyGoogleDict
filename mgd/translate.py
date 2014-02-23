@@ -1,20 +1,26 @@
-from __future__ import print_function
 from __future__ import unicode_literals
+from __future__ import print_function
 
 import os
 import subprocess
 import tempfile
 
-from google_translate_api import TranslateService
-from google_translate_api import TTSService
+from google_translate_api import TranslateService, TTSService
 from mgd import data_io
-from mgd import share
+
+from mgd.share import (decorate_all_methods,
+                       debug_return_val,
+                       ensure_decode,
+                       convert_dict_to_key_value_pairs,
+                       assemble_senteces_from_json,
+                       DICT,
+                       SENTENCES,)
 
 
-@share.decorate_all_methods(share.debug_return_val)
+@decorate_all_methods(debug_return_val)
 class Translator:
 
-    @share.ensure_decode
+    @ensure_decode
     def __init__(self, from_lang, to_lang, data, debug=False):
         self._debug = debug
         self._from_lang = from_lang
@@ -33,9 +39,9 @@ class Translator:
     @staticmethod
     def display_result(result):
         OUTPUT_FORMAT = '[{}] {}'
-        if share.DICT in result:
+        if DICT in result:
             lines = []
-            pos_vals_pairs = share.convert_dict_to_key_value_pairs(result)
+            pos_vals_pairs = convert_dict_to_key_value_pairs(result)
             for pos, vals in pos_vals_pairs:
                 explanation = OUTPUT_FORMAT.format(
                     pos,
@@ -44,13 +50,13 @@ class Translator:
                 lines.append(explanation)
             print(os.linesep.join(lines))
         else:
-            val = share.assemble_senteces_from_json(result)
-            print(OUTPUT_FORMAT.format(share.SENTENCES, val))
+            val = assemble_senteces_from_json(result)
+            print(OUTPUT_FORMAT.format(SENTENCES, val))
 
 
 class Speaker:
 
-    @share.ensure_decode
+    @ensure_decode
     def __init__(self, from_lang, data):
         self._from_lang = from_lang
         self._data = data
