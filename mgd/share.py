@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import inspect
 from functools import wraps
 from pprint import pprint
@@ -31,16 +33,20 @@ def ensure_decode(func):
     return wrapper
 
 
-def assemble_senteces_from_json(json):
+def assemble_senteces_from_json_data(json_data):
+    """
+    Return:
+        Unicode strings.
+    """
     sentences = map(
         lambda x: x[TRANS],
-        json[SENTENCES],
+        json_data[SENTENCES],
     )
     return ''.join(sentences)
 
 
-def convert_dict_to_key_value_pairs(json):
-    for entity in json.get(DICT):
+def convert_dict_to_key_value_pairs(json_data):
+    for entity in json_data.get(DICT):
         pos = entity[POS] or 'error_pos'
         vals = [val for val in entity[TERMS]]
         yield pos, vals
