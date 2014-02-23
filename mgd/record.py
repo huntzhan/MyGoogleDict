@@ -119,9 +119,7 @@ class Record:
                 record.find(_RESULT).find(_SENTENCE).text,
                 record.find(_TIME).text,
             )
-            records.append(
-                map(lambda x: x.encode(_UTF8), extract_data),
-            )
+            records.append(extract_data)
         sorted_records = sorted(
             records,
             key=lambda x: datetime.strptime(x[-1], _ISO_FORMAT),
