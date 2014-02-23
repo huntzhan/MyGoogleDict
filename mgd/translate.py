@@ -60,7 +60,12 @@ class Speaker:
         mpeg_binary = tts.get_mpeg_binary(self._from_lang, self._data)
         playback_command = data_io.get_playback_command()
 
-        with tempfile.NamedTemporaryFile(bufsize=0) as f:
-            f.write(mpeg_binary)
-            playback_command.append(f.name)
-            subprocess.call(playback_command)
+        try:
+            f = tempfile.NamedTemporaryFile(bufsize=0)
+        except:
+            f = tempfile.NamedTemporaryFile(buffering=0)
+
+        f.write(mpeg_binary)
+        playback_command.append(f.name)
+        subprocess.call(playback_command)
+        f.close()
