@@ -2,10 +2,9 @@ from __future__ import print_function
 
 from datetime import datetime
 import xml.etree.ElementTree as ET
-from functools import wraps
 
-import share
-from data_io import RecordIO
+from mgd import share
+from mgd.data_io import RecordIO
 
 
 _UTF8 = 'UTF-8'
@@ -21,8 +20,6 @@ _DICT = 'dict'
 _POS = 'pos'
 _MEANING = 'meaning'
 _TIME = 'time'
-
-
 
 
 @share.decorate_all_methods(share.debug_return_val)

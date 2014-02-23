@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 """
 Usage: mgd [-f <from_lang>] [-t <to_lang>]
            [-v|--reverse] [-s|--speak] <data>...
@@ -11,11 +12,12 @@ Options:
     -s --speak      speak out the result
     -r --record     display search record
 """
+
 from docopt import docopt
-from translate import Translator
-from translate import Speaker
-from record import Record
-import data_io
+from mgd.translate import Translator
+from mgd.translate import Speaker
+from mgd.record import Record
+from mgd import data_io
 
 
 def _assemble_data(raw_data):
@@ -45,7 +47,7 @@ def _extract(arguements):
 def main():
     arguements = docopt(
         data_io.set_up_doc(__doc__),
-        version='0.2'
+        version='0.2.1'
     )
 
     record = Record()

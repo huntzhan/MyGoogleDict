@@ -1,7 +1,12 @@
 from __future__ import print_function
+
 import os
 import gzip
-import ConfigParser
+
+try:
+    import ConfigParser as configparser
+except:
+    import configparser
 
 
 # _DATA_DIR hard coded the directory contains records and configuation file.
@@ -112,7 +117,7 @@ class RecordIO(object):
 class ConfigIO(object):
 
     def __init__(self):
-        self._config = ConfigParser.ConfigParser()
+        self._config = configparser.ConfigParser()
         self._config.readfp(self._open_config())
 
     def _init_config(self):

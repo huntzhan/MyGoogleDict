@@ -1,12 +1,14 @@
 from __future__ import print_function
 from __future__ import unicode_literals
+
 import os
 import subprocess
 import tempfile
-import share
+
 from google_translate_api import TranslateService
 from google_translate_api import TTSService
-import data_io
+from mgd import data_io
+from mgd import share
 
 
 @share.decorate_all_methods(share.debug_return_val)
