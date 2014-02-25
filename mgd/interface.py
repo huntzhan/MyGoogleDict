@@ -24,6 +24,9 @@ from mgd.record import Record
 from mgd.data_io import set_up_doc
 
 
+__version__ = '0.2.2'
+
+
 def _assemble_data(raw_data):
     if len(raw_data) == 1:
         # single word
@@ -48,7 +51,7 @@ def _extract(arguements):
 def main():
     arguements = docopt(
         set_up_doc(__doc__),
-        version='0.2.1'
+        version=__version__,
     )
 
     record = Record()
