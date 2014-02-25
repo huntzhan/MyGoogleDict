@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
 from setuptools import setup
+from mgd.interface import __version__
 
 setup(
     name='mgd',
-    version='0.2.2',
+    version=__version__,
     author='Zhan Haoxun',
     author_email='programmer.zhx@gmail.com',
 
