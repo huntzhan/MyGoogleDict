@@ -89,6 +89,12 @@ To-Do List
 Release List
 ~~~~~~~~~~~~
 
+0.2.2
+^^^^^
+
+-  Port for google\_translate\_api v0.3.
+-  Improve code organization.
+
 0.2.1
 ^^^^^
 

@@ -60,6 +60,10 @@ Directory MyGoogleDict contains following files:
 * Detect the input language automatically.
 
 ### Release List
+#### 0.2.2
+* Port for google_translate_api v0.3.
+* Improve code organization.
+
 #### 0.2.1
 * Fix bugs for python3.
 
