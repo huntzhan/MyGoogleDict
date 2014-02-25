@@ -5,17 +5,9 @@ from functools import wraps
 from pprint import pprint
 
 
-SENTENCES = 'sentences'
-TRANS = 'trans'
-DICT = 'dict'
-TERMS = 'terms'
-POS = 'pos'
-
-UTF8 = 'UTF-8'
-
-
 def ensure_decode(func):
     def utf8_decoder(text):
+        UTF8 = 'UTF-8'
         try:
             decoded = text.decode(UTF8)
         except:
@@ -31,25 +23,6 @@ def ensure_decode(func):
         decoded_kwargs = {k: utf8_decoder(v) for k, v in kwargs.items()}
         return func(self, *decoded_args, **decoded_kwargs)
     return wrapper
-
-
-def assemble_senteces_from_json(json_data):
-    """
-    Return:
-        Unicode strings.
-    """
-    sentences = map(
-        lambda x: x[TRANS],
-        json_data[SENTENCES],
-    )
-    return ''.join(sentences)
-
-
-def convert_dict_to_key_value_pairs(json_data):
-    for entity in json_data.get(DICT):
-        pos = entity[POS] or 'error_pos'
-        vals = [val for val in entity[TERMS]]
-        yield pos, vals
 
 
 def debug_return_val(func):

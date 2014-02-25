@@ -12,10 +12,6 @@ from mgd.share import (
     decorate_all_methods,
     debug_return_val,
     ensure_decode,
-    convert_dict_to_key_value_pairs,
-    assemble_senteces_from_json,
-    DICT,
-    SENTENCES,
 )
 
 
@@ -41,9 +37,15 @@ class Translator:
     @staticmethod
     def display_result(result):
         OUTPUT_FORMAT = '[{}] {}'
-        if DICT in result:
+        SENTENCE = 'sentence'
+
+        has_dict = TranslateService.has_pos_terms_pairs
+        extract_pairs = TranslateService.get_pos_terms_pairs_from_json
+        extract_sentences = TranslateService.get_senteces_from_json
+
+        if has_dict(result):
             lines = []
-            pos_vals_pairs = convert_dict_to_key_value_pairs(result)
+            pos_vals_pairs = extract_pairs(result)
             for pos, vals in pos_vals_pairs:
                 explanation = OUTPUT_FORMAT.format(
                     pos,
@@ -52,8 +54,8 @@ class Translator:
                 lines.append(explanation)
             print(os.linesep.join(lines))
         else:
-            val = assemble_senteces_from_json(result)
-            print(OUTPUT_FORMAT.format(SENTENCES, val))
+            val = extract_sentences(result)
+            print(OUTPUT_FORMAT.format(SENTENCE, val))
 
 
 class Speaker:

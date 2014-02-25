@@ -5,13 +5,12 @@ from __future__ import print_function
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
+from google_translate_api import TranslateService
+
 from mgd.share import (
     decorate_all_methods,
     debug_return_val,
     ensure_decode,
-    assemble_senteces_from_json,
-    convert_dict_to_key_value_pairs,
-    DICT,
 )
 from mgd.data_io import RecordIO
 
@@ -93,6 +92,10 @@ class Record:
             None.
         """
 
+        has_dict = TranslateService.has_pos_terms_pairs
+        extract_pairs = TranslateService.get_pos_terms_pairs_from_json
+        extract_sentences = TranslateService.get_senteces_from_json
+
         # read xml record file
         cache_xml = self._load_xml('cache')
 
@@ -126,13 +129,13 @@ class Record:
 
         # construct result node
         sentence_node = ET.SubElement(result_node, _SENTENCE)
-        sentence_node.text = assemble_senteces_from_json(result)
+        sentence_node.text = extract_sentences(result)
 
         # multiple explanations
-        if DICT in result:
-            dict_node = ET.SubElement(result_node, DICT)
+        if has_dict(result):
+            dict_node = ET.SubElement(result_node, _DICT)
 
-            pos_vals_pairs = convert_dict_to_key_value_pairs(result)
+            pos_vals_pairs = extract_pairs(result)
             for pos, vals in pos_vals_pairs:
                 pos_node = ET.SubElement(dict_node, _POS)
                 pos_node.text = pos

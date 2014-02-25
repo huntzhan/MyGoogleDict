@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='mgd',
-    version='0.2.1',
+    version='0.2.2',
     author='Zhan Haoxun',
     author_email='programmer.zhx@gmail.com',
 
@@ -13,7 +13,7 @@ setup(
     description='command-line front end of google translation serve.',
     long_description=open('README.rst').read(),
 
-    install_requires=['docopt==0.6.1', 'google_translate_api>=0.2'],
+    install_requires=['docopt==0.6.1', 'google_translate_api>=0.3'],
     packages=['mgd'],
 
     entry_points={
