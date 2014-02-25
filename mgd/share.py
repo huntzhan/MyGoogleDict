@@ -11,13 +11,13 @@ DICT = 'dict'
 TERMS = 'terms'
 POS = 'pos'
 
-_UTF8 = 'UTF-8'
+UTF8 = 'UTF-8'
 
 
 def ensure_decode(func):
     def utf8_decoder(text):
         try:
-            decoded = text.decode(_UTF8)
+            decoded = text.decode(UTF8)
         except:
             # both decoded text and result(a dictionary variable contains
             # decoded information) would trigger exception. In this case, just

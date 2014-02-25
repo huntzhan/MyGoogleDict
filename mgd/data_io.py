@@ -9,24 +9,21 @@ try:
 except:
     import configparser
 
+# __DATA_DIR hard coded the directory contains records and configuation
+# file.
+_DATA_DIR = os.path.expanduser('~/.mgd')
 
-class _GLOBAL:
+_CONFIG_FILENAME = 'config'
+_CACHE_FILENAME = 'cache.xml'
+_RECORD_FILENAME = 'record.xml.gz'
 
-    # _DATA_DIR hard coded the directory contains records and configuation
-    # file.
-    DATA_DIR = os.path.expanduser('~/.mgd')
+# fields in configuration file.
+_SECTION_NAME = 'MyGoogleDict'
+_FROM_LANG = 'default_from_lang'
+_TO_LANG = 'default_to_lang'
+_AUDIO_PLAYBACK_COMMAND = 'audio_playback_command'
 
-    CONFIG_FILENAME = 'config'
-    CACHE_FILENAME = 'cache.xml'
-    RECORD_FILENAME = 'record.xml.gz'
-
-    # fields in configuration file.
-    SECTION_NAME = 'MyGoogleDict'
-    FROM_LANG = 'default_from_lang'
-    TO_LANG = 'default_to_lang'
-    AUDIO_PLAYBACK_COMMAND = 'audio_playback_command'
-
-    RAW_CONTENT = """
+_RAW_CONTENT = """
 [{}]
 {}: en
 {}: zh-CN
@@ -38,27 +35,27 @@ def _generate_default_config_content():
     import platform
     audio_player = 'afplay' if platform.system() == 'Darwin' else 'mpg123'
 
-    content = _GLOBAL.RAW_CONTENT.format(
-        _GLOBAL.SECTION_NAME,
-        _GLOBAL.FROM_LANG,
-        _GLOBAL.TO_LANG,
-        _GLOBAL.AUDIO_PLAYBACK_COMMAND, audio_player,
+    content = _RAW_CONTENT.format(
+        _SECTION_NAME,
+        _FROM_LANG,
+        _TO_LANG,
+        _AUDIO_PLAYBACK_COMMAND, audio_player,
     )
     return content
 
-_GLOBAL.DEFAULT_CONFIG_CONTENT = _generate_default_config_content()
+_DEFAULT_CONFIG_CONTENT = _generate_default_config_content()
 
 
 class RecordIO(object):
 
     def __init__(self):
         self._cache_path = os.path.join(
-            _GLOBAL.DATA_DIR,
-            _GLOBAL.CACHE_FILENAME,
+            _DATA_DIR,
+            _CACHE_FILENAME,
         )
         self._record_path = os.path.join(
-            _GLOBAL.DATA_DIR,
-            _GLOBAL.RECORD_FILENAME,
+            _DATA_DIR,
+            _RECORD_FILENAME,
         )
 
     def _read_file(self, path, gzip_enable=False):
@@ -146,19 +143,19 @@ class ConfigIO(object):
 
     def _init_config(self):
         # check existence of data dir.
-        if not os.path.exists(_GLOBAL.DATA_DIR):
-            os.makedirs(_GLOBAL.DATA_DIR)
+        if not os.path.exists(_DATA_DIR):
+            os.makedirs(_DATA_DIR)
 
         path = os.path.join(
-            _GLOBAL.DATA_DIR,
-            _GLOBAL.CONFIG_FILENAME,
+            _DATA_DIR,
+            _CONFIG_FILENAME,
         )
         # assure existence of configuration file
         if not os.path.exists(path):
             # generate default configuation file.
             # text mode is required, for writing unicode literals.
             with open(path, 'w') as f:
-                f.write(_GLOBAL.DEFAULT_CONFIG_CONTENT)
+                f.write(_DEFAULT_CONFIG_CONTENT)
         # finally, return that path.
         return path
 
@@ -169,15 +166,15 @@ class ConfigIO(object):
 
     def set_up_doc(self, doc):
         return doc.format(
-            default_from_lang=self._config.get(_GLOBAL.SECTION_NAME,
-                                               _GLOBAL.FROM_LANG),
-            default_to_lang=self._config.get(_GLOBAL.SECTION_NAME,
-                                             _GLOBAL.TO_LANG),
+            default_from_lang=self._config.get(_SECTION_NAME,
+                                               _FROM_LANG),
+            default_to_lang=self._config.get(_SECTION_NAME,
+                                             _TO_LANG),
         )
 
     def get_playback_command(self):
-        return self._config.get(_GLOBAL.SECTION_NAME,
-                                _GLOBAL.AUDIO_PLAYBACK_COMMAND)
+        return self._config.get(_SECTION_NAME,
+                                _AUDIO_PLAYBACK_COMMAND)
 
 
 def set_up_doc(doc):

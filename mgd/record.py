@@ -5,12 +5,14 @@ from __future__ import print_function
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
-from mgd.share import (decorate_all_methods,
-                       debug_return_val,
-                       ensure_decode,
-                       assemble_senteces_from_json,
-                       convert_dict_to_key_value_pairs,
-                       DICT,)
+from mgd.share import (
+    decorate_all_methods,
+    debug_return_val,
+    ensure_decode,
+    assemble_senteces_from_json,
+    convert_dict_to_key_value_pairs,
+    DICT,
+)
 from mgd.data_io import RecordIO
 
 try:
@@ -19,20 +21,18 @@ except:
     pass
 
 
-class _GLOBAL:
-    UTF8 = 'UTF-8'
-    ISO_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
-    ROOT = 'root'
-    RECORD = 'record'
-    FROM_LANG = 'from_lang'
-    TO_LANG = 'to_lang'
-    DATA = 'data'
-    RESULT = 'result'
-    SENTENCE = 'sentence'
-    DICT = 'dict'
-    POS = 'pos'
-    MEANING = 'meaning'
-    TIME = 'time'
+_ISO_FORMAT = '%Y-%m-%dT%H:%M:%S.%f'
+_ROOT = 'root'
+_RECORD = 'record'
+_FROM_LANG = 'from_lang'
+_TO_LANG = 'to_lang'
+_DATA = 'data'
+_RESULT = 'result'
+_SENTENCE = 'sentence'
+_DICT = 'dict'
+_POS = 'pos'
+_MEANING = 'meaning'
+_TIME = 'time'
 
 
 @decorate_all_methods(debug_return_val)
@@ -47,11 +47,11 @@ class Record:
             # WTF? fromstring only accept bytes?
             xml_content = getattr(self._record_io, field_name)
             xml = ET.fromstring(xml_content)
-        except Exception as e:
+        except:
             # "The element name, attribute names, and attribute values can be
             # either bytestrings or Unicode strings." Thus, unicode should be
             # ok.
-            xml = ET.Element(_GLOBAL.ROOT)
+            xml = ET.Element(_ROOT)
         return xml
 
     def _write_xml(self, xml, field_name):
@@ -99,7 +99,7 @@ class Record:
         # "The element name, attribute names, and attribute values can be
         # either bytestrings or Unicode strings." Thus, unicode should be
         # ok.
-        new_record = ET.SubElement(cache_xml, _GLOBAL.RECORD)
+        new_record = ET.SubElement(cache_xml, _RECORD)
 
         (from_lang_node, to_lang_node,
          data_node, result_node, time_node) =\
@@ -107,11 +107,11 @@ class Record:
                 # create new elements.
                 lambda x: ET.SubElement(new_record, x),
                 [
-                    _GLOBAL.FROM_LANG,
-                    _GLOBAL.TO_LANG,
-                    _GLOBAL.DATA,
-                    _GLOBAL.RESULT,
-                    _GLOBAL.TIME,
+                    _FROM_LANG,
+                    _TO_LANG,
+                    _DATA,
+                    _RESULT,
+                    _TIME,
                 ],
             )
 
@@ -125,20 +125,20 @@ class Record:
         time_node.text = str(datetime.now().isoformat())
 
         # construct result node
-        sentence_node = ET.SubElement(result_node, _GLOBAL.SENTENCE)
+        sentence_node = ET.SubElement(result_node, _SENTENCE)
         sentence_node.text = assemble_senteces_from_json(result)
 
         # multiple explanations
         if DICT in result:
-            dict_node = ET.SubElement(result_node, _GLOBAL.DICT)
+            dict_node = ET.SubElement(result_node, DICT)
 
             pos_vals_pairs = convert_dict_to_key_value_pairs(result)
             for pos, vals in pos_vals_pairs:
-                pos_node = ET.SubElement(dict_node, _GLOBAL.POS)
+                pos_node = ET.SubElement(dict_node, _POS)
                 pos_node.text = pos
 
                 for val in vals:
-                    meaning_node = ET.SubElement(pos_node, _GLOBAL.MEANING)
+                    meaning_node = ET.SubElement(pos_node, _MEANING)
                     meaning_node.text = val
 
         # save content to cache
@@ -155,14 +155,14 @@ class Record:
         records = []
         for record in record_xml:
             extract_data = (
-                record.find(_GLOBAL.DATA).text,
-                record.find(_GLOBAL.RESULT).find(_GLOBAL.SENTENCE).text,
-                record.find(_GLOBAL.TIME).text,
+                record.find(_DATA).text,
+                record.find(_RESULT).find(_SENTENCE).text,
+                record.find(_TIME).text,
             )
             records.append(extract_data)
         sorted_records = sorted(
             records,
-            key=lambda x: datetime.strptime(x[-1], _GLOBAL.ISO_FORMAT),
+            key=lambda x: datetime.strptime(x[-1], _ISO_FORMAT),
         )
 
         if not sorted_records:

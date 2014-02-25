@@ -8,13 +8,15 @@ import tempfile
 from google_translate_api import TranslateService, TTSService
 from mgd import data_io
 
-from mgd.share import (decorate_all_methods,
-                       debug_return_val,
-                       ensure_decode,
-                       convert_dict_to_key_value_pairs,
-                       assemble_senteces_from_json,
-                       DICT,
-                       SENTENCES,)
+from mgd.share import (
+    decorate_all_methods,
+    debug_return_val,
+    ensure_decode,
+    convert_dict_to_key_value_pairs,
+    assemble_senteces_from_json,
+    DICT,
+    SENTENCES,
+)
 
 
 @decorate_all_methods(debug_return_val)
